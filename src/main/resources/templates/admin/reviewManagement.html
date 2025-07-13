@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <title>Gestione Recensioni – SiwBooks Admin</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&family=Poppins:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-dark: #000000;
+            --primary-accent: #dc2626;
+            --secondary-accent: #ef4444;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --text-light: #9ca3af;
+            --bg-light: #f9fafb;
+            --bg-cream: #fef3c7;
+            --bg-white: #ffffff;
+            --border-light: #e5e7eb;
+            --shadow-light: 0 2px 10px rgba(0,0,0,0.08);
+            --shadow-medium: 0 5px 20px rgba(0,0,0,0.1);
+            --shadow-hover: 0 10px 30px rgba(0,0,0,0.15);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --danger-color: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--bg-light);
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header-wrapper {
+            background: var(--bg-white);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header-top {
+            background: #000000;
+            color: var(--bg-white);
+            padding: 8px 0;
+            font-size: 12px;
+        }
+
+        .header-top-content {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-top-left {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-top-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-top a {
+            color: var(--bg-white);
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .header-top a:hover {
+            opacity: 0.8;
+        }
+
+        .main-header {
+            background: var(--bg-white);
+            padding: 20px 0;
+        }
+
+        .header-content {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-white);
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: var(--primary-accent);
+        }
+
+        /* Admin Badge */
+        .admin-badge {
+            background: var(--primary-accent);
+            color: var(--bg-white);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .main-nav a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--primary-accent);
+        }
+
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-accent);
+            transition: width 0.3s;
+        }
+
+        .main-nav a:hover::after,
+        .main-nav a.active::after {
+            width: 100%;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-icons button,
+        .header-icons a {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: color 0.3s;
+            text-decoration: none;
+        }
+
+        .header-icons button:hover,
+        .header-icons a:hover {
+            color: var(--primary-accent);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 140px 15px 80px;
+        }
+
+        /* Admin Header */
+        .admin-header {
+            background: linear-gradient(135deg, #fff7ed 0%, #fee2e2 100%);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .admin-header-content p {
+            color: var(--text-gray);
+            font-size: 16px;
+        }
+
+        .back-to-admin {
+            padding: 12px 25px;
+            background: var(--primary-dark);
+            color: var(--bg-white);
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-to-admin:hover {
+            background: var(--primary-accent);
+            transform: translateY(-2px);
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 15px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .alert i {
+            font-size: 20px;
+        }
+
+        /* Page Title */
+        .page-title-section {
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            color: var(--text-gray);
+        }
+
+        /* Stats Bar - Only 2 items now */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stat-item {
+            background: var(--bg-white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-accent);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: var(--text-gray);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--bg-white);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+        }
+
+        .search-btn {
+            padding: 10px 20px;
+            background: var(--primary-accent);
+            color: var(--bg-white);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background: var(--secondary-accent);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+        }
+
+        /* Table */
+        .table-container {
+            background: var(--bg-white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .custom-table thead {
+            background: var(--primary-dark);
+            color: var(--bg-white);
+        }
+
+        .custom-table th {
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .custom-table tbody tr {
+            border-bottom: 1px solid var(--border-light);
+            transition: background 0.3s;
+        }
+
+        .custom-table tbody tr:hover {
+            background: var(--bg-light);
+        }
+
+        .custom-table td {
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .review-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .rating {
+            display: flex;
+            gap: 3px;
+            color: #fbbf24;
+        }
+
+        .book-link {
+            color: var(--primary-accent);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .book-link:hover {
+            color: var(--secondary-accent);
+            text-decoration: underline;
+        }
+
+        .username {
+            color: var(--text-gray);
+            font-size: 13px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: var(--bg-white);
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .btn-info {
+            background: var(--info-color);
+            color: var(--bg-white);
+        }
+
+        .btn-info:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-gray);
+        }
+
+        .empty-state-icon {
+            font-size: 60px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-dark);
+            padding: 60px 0 30px;
+            color: var(--bg-white);
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: var(--bg-white);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section li {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--primary-accent);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 991px) {
+            .admin-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .filter-section {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-nav {
+                display: none;
+            }
+            
+            .page-title {
+                font-size: 32px;
+            }
+            
+            .stats-bar {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+            
+            .custom-table {
+                font-size: 12px;
+            }
+            
+            .custom-table th,
+            .custom-table td {
+                padding: 15px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-wrapper">
+        <!-- Top Bar -->
+        <div class="header-top">
+            <div class="header-top-content">
+                <div class="header-top-left">
+                    <span><i class="fas fa-phone"></i> +1 (555) 123-4567</span>
+                    <span><i class="fas fa-envelope"></i> info@siwbooks.com</span>
+                </div>
+                <div class="header-top-right">
+                    <span>Admin Panel</span>
+                    <div sec:authorize="isAuthenticated()">
+                        <span>Welcome, <span sec:authentication="name"></span></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" style="background: none; border: none; color: white; cursor: pointer;">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Header -->
+        <div class="main-header">
+            <div class="header-content">
+                <a th:href="@{/}" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="logo-text">Siw<span>Books</span></div>
+                    <span class="admin-badge">Admin</span>
+                </a>
+                
+                <nav class="main-nav">
+                    <a th:href="@{/}">Home</a>
+                    <a th:href="@{/books}">Books</a>
+                    <a th:href="@{/authors}">Authors</a>
+                    <a th:href="@{/admin}" class="active">Admin</a>
+                </nav>
+                
+                <div class="header-icons">
+                    <button type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <a href="#">
+                        <i class="fas fa-bell"></i>
+                    </a>
+                    <a href="#">
+                        <i class="fas fa-cog"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Admin Header -->
+        <div class="admin-header">
+            <div class="admin-header-content">
+                <h1>Pannello di Amministrazione</h1>
+                <p>Gestione completa delle recensioni del sito</p>
+            </div>
+            <a th:href="@{/admin}" class="back-to-admin">
+                <i class="fas fa-arrow-left"></i>
+                Torna al Dashboard
+            </a>
+        </div>
+
+        <!-- Alert Messages -->
+        <div th:if="${deleteSuccess}" class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${deleteSuccess}">Success message</span>
+        </div>
+        <div th:if="${deleteError}" class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i>
+            <span th:text="${deleteError}">Error message</span>
+        </div>
+
+        <!-- Page Title -->
+        <div class="page-title-section">
+            <h2 class="page-title">Gestione Tutte le Recensioni</h2>
+            <p class="page-subtitle">Da questa pagina puoi moderare tutte le recensioni del sito</p>
+        </div>
+
+        <!-- Stats Bar - Only 2 items -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" th:text="${totalReviews ?: 0}">0</div>
+                <div class="stat-label">Recensioni Totali</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" th:text="${averageRating != null ? #numbers.formatDecimal(averageRating, 1, 1) : '0.0'}">0.0</div>
+                <div class="stat-label">Media Voti</div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Cerca recensione..." id="searchInput">
+                <button class="search-btn" onclick="searchReviews()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="filter-group">
+                <select class="filter-select" id="ratingFilter">
+                    <option value="">Tutti i voti</option>
+                    <option value="5">5 stelle</option>
+                    <option value="4">4 stelle</option>
+                    <option value="3">3 stelle</option>
+                    <option value="2">2 stelle</option>
+                    <option value="1">1 stella</option>
+                </select>
+                <select class="filter-select" id="sortFilter">
+                    
+                    <option value="highest">Voto più alto</option>
+                    <option value="lowest">Voto più basso</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Reviews Table -->
+        <div class="table-container">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">Titolo Recensione</th>
+                        <th style="width: 15%;">Voto</th>
+                        <th style="width: 25%;">Libro Recensito</th>
+                        <th style="width: 20%;">Utente</th>
+                        <th style="width: 15%;">Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${reviews == null || reviews.isEmpty()}">
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <h3>Nessuna recensione presente</h3>
+                                <p>Non ci sono recensioni nel sistema al momento.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:each="review : ${reviews}" class="review-row">
+                        <td>
+                            <div class="review-title" th:text="${review.title}">Review Title</div>
+                        </td>
+						<td>
+						    <div class="rating">
+						        <!-- Stelle piene -->
+						        <i class="fas fa-star" th:each="star : ${#numbers.sequence(1, review.rating)}"></i>
+						        <!-- Stelle vuote solo se necessarie -->
+						        <i class="far fa-star" th:each="star : ${#numbers.sequence(review.rating + 1, 5)}" th:if="${review.rating < 5}"></i>
+						    </div>
+						    <small th:text="${review.rating} + ' / 5'" style="color: var(--text-gray);">0/5</small>
+						</td>
+                        <td>
+                            <a th:href="@{/books/{id}(id=${review.book.id})}" 
+                               th:text="${review.book.title}" 
+                               target="_blank" 
+                               class="book-link">Book Title</a>
+                        </td>
+                        <td>
+                            <div class="username" th:text="${review.reviewer.username}">Username</div>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button type="button" 
+                                        class="btn btn-info" 
+                                        onclick="viewReview(this)"
+                                        th:data-review-text="${review.text}">
+                                    <i class="fas fa-eye"></i> Vedi
+                                </button>
+                                <form th:action="@{/admin/reviews/{id}/delete(id=${review.id})}" 
+                                      method="post" 
+                                      onsubmit="return confirm('Sei sicuro di voler cancellare questa recensione?');"
+                                      style="margin: 0;">
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fas fa-trash"></i> Cancella
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container" style="padding-top: 0;">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Admin Panel</h3>
+                    <p>Gestione recensioni SiwBooks. Modera e gestisci tutte le recensioni degli utenti.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a th:href="@{/admin}">Dashboard</a></li>
+                        <li><a th:href="@{/admin/authors}">Gestisci Autori</a></li>
+                        <li><a th:href="@{/admin/books}">Gestisci Libri</a></li>
+                        <li><a th:href="@{/admin/reviews}">Gestisci Recensioni</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Strumenti</h3>
+                    <ul>
+                        <li><a href="#">Esporta Recensioni</a></li>
+                        <li><a href="#">Statistiche</a></li>
+                        <li><a href="#">Report Spam</a></li>
+                        <li><a href="#">Impostazioni</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Info Sistema</h3>
+                    <ul>
+                        <li><i class="fas fa-check-circle" style="color: var(--success-color);"></i> Sistema Attivo</li>
+                        <li><i class="fas fa-database"></i> Database: OK</li>
+                        <li><i class="fas fa-shield-alt"></i> Sicurezza: Attiva</li>
+                        <li><i class="fas fa-code-branch"></i> v1.0.0</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 SiwBooks Admin Panel. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Search functionality
+        function searchReviews() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('.review-row');
+            
+            rows.forEach(row => {
+                const title = row.querySelector('.review-title').textContent.toLowerCase();
+                const book = row.querySelector('.book-link').textContent.toLowerCase();
+                const user = row.querySelector('.username').textContent.toLowerCase();
+                
+                if (title.includes(searchValue) || book.includes(searchValue) || user.includes(searchValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Filter by rating
+        document.getElementById('ratingFilter').addEventListener('change', function() {
+            const selectedRating = this.value;
+            const rows = document.querySelectorAll('.review-row');
+            
+            rows.forEach(row => {
+                if (selectedRating === '') {
+                    row.style.display = '';
+                } else {
+                    const ratingText = row.querySelector('small').textContent;
+                    const rating = ratingText.charAt(0);
+                    if (rating === selectedRating) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        });
+
+        // View review text
+        function viewReview(button) {
+            const reviewText = button.getAttribute('data-review-text');
+            alert('Testo della recensione:\n\n' + reviewText);
+        }
+
+        // Real-time search as user types
+        document.getElementById('searchInput').addEventListener('keyup', searchReviews);
+
+        // Initialize filters on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-focus on search input
+            document.getElementById('searchInput').focus();
+        });
+    </script>
+</body>
+</html>

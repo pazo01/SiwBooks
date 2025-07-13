@@ -1,0 +1,103 @@
+/* ======= Reset & Base ======= */
+html, body {
+  margin: 0; padding: 0;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  background-color: #fdfdfd;
+  height: 100%;
+}
+* { box-sizing: border-box; }
+
+/* ======= Navbar & Topbar ======= */
+.topbar {
+  background: #f8f8f8; padding: 8px 20px; text-align: right;
+}
+.topbar a { color: #555; margin-left: 15px; text-decoration: none; }
+
+.main-header {
+  display: flex; justify-content: space-between;
+  align-items: center; padding: 20px;
+  background: #fff; border-bottom: 1px solid #eee;
+}
+.main-header .logo img { height: 48px; }
+.main-header nav a { margin-left: 30px; color: #444; text-decoration: none; font-weight: 500; }
+.main-header nav a:hover { color: #d46c42; }
+
+/* ======= Container ======= */
+.container {
+  width: 90%; max-width: 1200px;
+  margin: 0 auto; padding: 20px 0;
+}
+
+/* Home header */
+.page-home .home-header {
+  max-width: 800px;
+  background: #f8f9fa;
+  border-radius: 0.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+.page-home .home-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+.page-home .home-header p {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+/* Ultime Novità */
+.page-home .latest-books h2 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+.page-home .card {
+  border: none;
+  border-radius: 0.5rem;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.page-home .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+.page-home .card-img-top {
+  height: 200px;
+  object-fit: cover;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+
+/* ======= Messaggi flash ======= */
+.message { padding: 12px; border-radius: 4px; margin-bottom: 15px; }
+.message.error { background: #fdecea; color: #d93025; }
+.message.success { background: #e6f4ea; color: #188038; }
+.message.info { background: #e8f0fe; color: #1967d2; }
+
+
+
+/* ======= Logo styling ======= */
+.main-header .logo {
+  display: flex;
+  align-items: center;
+}
+
+.main-header .logo .logo-img {
+  height: 48px;    /* o l’altezza che preferisci */
+  width: auto;
+}
+
+.main-header .logo .logo-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #444;
+  margin-left: 0.5rem;
+}
+
+
+
+
+
+
+

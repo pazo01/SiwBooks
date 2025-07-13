@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <title>SiwBooks – Discover Your Next Great Read</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&family=Poppins:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-dark: #000000;
+            --primary-accent: #dc2626;
+            --secondary-accent: #ef4444;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --text-light: #9ca3af;
+            --bg-light: #f9fafb;
+            --bg-cream: #fef3c7;
+            --bg-white: #ffffff;
+            --border-light: #e5e7eb;
+            --shadow-light: 0 2px 10px rgba(0,0,0,0.08);
+            --shadow-medium: 0 5px 20px rgba(0,0,0,0.1);
+            --shadow-hover: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--bg-white);
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header-wrapper {
+            background: var(--bg-white);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header-top {
+            background: #000000;
+            color: var(--bg-white);
+            padding: 8px 0;
+            font-size: 12px;
+        }
+
+        .header-top-content {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-top-left {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-top-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-top a {
+            color: var(--bg-white);
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .header-top a:hover {
+            opacity: 0.8;
+        }
+
+        .main-header {
+            background: var(--bg-white);
+            padding: 20px 0;
+        }
+
+        .header-content {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-white);
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: var(--primary-accent);
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .main-nav a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--primary-accent);
+        }
+
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-accent);
+            transition: width 0.3s;
+        }
+
+        .main-nav a:hover::after,
+        .main-nav a.active::after {
+            width: 100%;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-icons button,
+        .header-icons a {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: color 0.3s;
+            text-decoration: none;
+        }
+
+        .header-icons button:hover,
+        .header-icons a:hover {
+            color: var(--primary-accent);
+        }
+
+        /* Hero Slider Section */
+        .hero-slider {
+            margin-top: 108px;
+            position: relative;
+            height: 600px;
+            background: linear-gradient(135deg, #fff7ed 0%, #fee2e2 100%);
+            overflow: hidden;
+        }
+
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            opacity: 1;
+            transition: opacity 1s;
+        }
+
+        .hero-content {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 64px;
+            line-height: 1.1;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero-text h1 span {
+            color: var(--primary-accent);
+        }
+
+        .hero-text .subtitle {
+            font-family: 'Crimson Text', serif;
+            font-size: 24px;
+            color: var(--text-gray);
+            margin-bottom: 30px;
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        .hero-text p {
+            font-size: 16px;
+            color: var(--text-gray);
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            text-decoration: none;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 13px;
+            transition: all 0.3s;
+            cursor: pointer;
+            display: inline-block;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--primary-accent);
+            color: var(--bg-white);
+            border-color: var(--primary-accent);
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-accent);
+            border-color: var(--secondary-accent);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-dark);
+            color: var(--bg-white);
+        }
+
+        .hero-image {
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-book-display {
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-book-main {
+            width: 300px;
+            height: 450px;
+            background: linear-gradient(135deg, var(--primary-accent) 0%, var(--secondary-accent) 100%);
+            border-radius: 5px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            position: relative;
+            transform: perspective(1000px) rotateY(-15deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-book-main::after {
+            content: '\f02d';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 80px;
+            color: rgba(255,255,255,0.3);
+        }
+
+        /* Featured Books Section */
+        .featured-section {
+            padding: 80px 0;
+            background: var(--bg-white);
+        }
+
+        .container {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            font-family: 'Crimson Text', serif;
+            font-size: 20px;
+            color: var(--text-gray);
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+        }
+
+        .book-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: transparent;
+        }
+
+        .book-card-image {
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-light);
+        }
+
+        .book-card-image img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .book-card:hover .book-card-image img {
+            transform: scale(1.05);
+        }
+
+        .book-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--primary-accent);
+            color: var(--bg-white);
+            padding: 5px 15px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .book-card-content {
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        .book-card-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 20px;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .book-card:hover .book-card-title {
+            color: var(--primary-accent);
+        }
+
+        .book-card-author {
+            color: var(--text-gray);
+            font-size: 13px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Categories Section */
+        .categories-section {
+            padding: 80px 0;
+            background: var(--bg-light);
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 30px;
+        }
+
+        .category-card {
+            background: var(--bg-white);
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-accent);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+            transform-origin: left;
+        }
+
+        .category-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .category-card:hover .category-icon {
+            transform: scale(1.1);
+            background: var(--primary-accent);
+            color: var(--bg-white);
+        }
+
+        .category-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: var(--bg-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            padding: 15px;
+        }
+
+        .category-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .category-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .category-card p {
+            color: var(--text-gray);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-dark);
+            padding: 60px 0 30px;
+            color: var(--bg-white);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: var(--bg-white);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section li {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--primary-accent);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.1);
+            color: var(--bg-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: background 0.3s;
+            border-radius: 50%;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-accent);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 13px;
+        }
+
+        /* Category Icons */
+        .icon-fiction::before { content: '\f02d'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
+        .icon-romance::before { content: '\f004'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
+        .icon-mystery::before { content: '\f002'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
+        .icon-scifi::before { content: '\f135'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
+        .icon-nonfiction::before { content: '\f19d'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
+        .icon-children::before { content: '\f1ae'; font-family: 'Font Awesome 6 Free'; font-weight: 900; }
+
+        /* Responsive */
+        @media (max-width: 991px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .hero-text h1 {
+                font-size: 48px;
+            }
+            
+            .hero-image {
+                display: none;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-nav {
+                display: none;
+            }
+            
+            .logo-text {
+                font-size: 24px;
+            }
+            
+            .hero-text h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-wrapper">
+        <!-- Top Bar -->
+        <div class="header-top">
+            <div class="header-top-content">
+                <div class="header-top-left">
+                    <span><i class="fas fa-phone"></i> +1 (555) 123-4567</span>
+                    <span><i class="fas fa-envelope"></i> info@siwbooks.com</span>
+                </div>
+                <div class="header-top-right">
+                    <a th:href="@{/login}" sec:authorize="isAnonymous()">
+                        <i class="fas fa-user"></i> Login
+                    </a>
+                    <a th:href="@{/register}" sec:authorize="isAnonymous()">Register</a>
+                    <div sec:authorize="isAuthenticated()">
+                        <span>Welcome, <span sec:authentication="name"></span></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" style="background: none; border: none; color: white; cursor: pointer;">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Header -->
+        <div class="main-header">
+            <div class="header-content">
+                <a th:href="@{/}" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="logo-text">Siw<span>Books</span></div>
+                </a>
+                
+                <nav class="main-nav">
+                    <a th:href="@{/}" class="active">Home</a>
+                    <a th:href="@{/books}">Books</a>
+                    <a th:href="@{/authors}">Authors</a>
+					<a th:href="@{/admin/dashboard}" sec:authorize="hasAuthority('ROLE_ADMIN')">Admin</a>
+                  
+                </nav>
+                
+                <div class="header-icons">
+                    <button type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <a href="#">
+                        <i class="fas fa-heart"></i>
+                    </a>
+                    
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Slider Section -->
+    <section class="hero-slider">
+        <div class="hero-slide">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Discover Your <span>Literary Journey</span></h1>
+                    <p class="subtitle">Where every book opens a new world</p>
+                    <p>Immerse yourself in our carefully curated collection of timeless classics, contemporary masterpieces, and hidden literary gems waiting to be discovered.</p>
+                    <div class="hero-buttons">
+                        <a th:href="@{/books}" class="btn btn-primary">Explore Collection</a>
+                        <a th:href="@{/authors}" class="btn btn-outline">Meet Authors</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="hero-book-display">
+                        <div class="hero-book-main"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+	<!-- Featured Books Section -->
+	<section class="featured-section">
+	    <div class="container">
+	        <div class="section-header">
+	            <h2 class="section-title">Libri in Evidenza</h2>
+	            <p class="section-subtitle">I nostri migliori titoli selezionati per te</p>
+	        </div>
+	        
+	        <!-- Se ci sono libri -->
+	        <div th:if="${featuredBooks != null and !featuredBooks.isEmpty()}" class="books-grid">
+	            <div th:each="book : ${featuredBooks}" class="book-card" style="display: flex; flex-direction: column; height: 100%;">
+	                <!-- Copertina del libro -->
+	                <div class="book-card-image">
+	                    <img th:if="${!book.images.isEmpty()}"
+	                         th:src="@{/image/book/{id}(id=${book.images.iterator().next().id})}"
+	                         th:alt="${book.title}"/>
+	                    
+	                    <!-- Placeholder se non ha immagini -->
+	                    <div th:if="${book.images.isEmpty()}" 
+	                         style="width: 100%; height: 320px; background: var(--bg-light); display: flex; align-items: center; justify-content: center; color: var(--text-light);">
+	                        <i class="fas fa-book" style="font-size: 48px;"></i>
+	                    </div>
+	                    
+	                    <!-- Badge nuovo/featured -->
+	                    <div class="book-badge">In Evidenza</div>
+	                </div>
+	                
+	                <!-- Info del libro - flex-grow per spingere il bottone in basso -->
+	                <div class="book-card-content" style="flex-grow: 1; display: flex; flex-direction: column;">
+	                    <h3 class="book-card-title" th:text="${book.title}">Titolo Libro</h3>
+	                    
+	                    <!-- Autori -->
+	                    <div class="book-card-author">
+	                        <span th:each="author, iter : ${book.authors}">
+	                            <span th:text="${author.firstName} + ' ' + ${author.lastName}">Nome Autore</span>
+	                            <span th:unless="${iter.last}">, </span>
+	                        </span>
+	                    </div>
+	                    
+	                    <!-- Spacer che cresce per spingere tutto in basso -->
+	                    <div style="flex-grow: 1;"></div>
+	                    
+	                    <!-- Anno e bottone sempre allineati in fondo -->
+	                    <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-light);">
+	                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px;">
+	                            <span style="color: var(--text-gray); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;" th:text="'Anno ' + ${book.year}">Anno</span>
+	                            <a th:href="@{/books/{id}(id=${book.id})}" 
+	                               class="btn btn-primary"
+	                               style="padding: 10px 24px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; white-space: nowrap;">
+	                                Scopri di più
+	                            </a>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	        
+	        <!-- Se non ci sono libri -->
+	        <div th:if="${featuredBooks == null or featuredBooks.isEmpty()}" 
+	             style="text-align: center; padding: 80px 20px;">
+	            <div style="background: var(--bg-light); border-radius: 50%; width: 120px; height: 120px; margin: 0 auto 30px; display: flex; align-items: center; justify-content: center;">
+	                <i class="fas fa-book-open" style="font-size: 48px; color: var(--text-light);"></i>
+	            </div>
+	            <h3 style="font-family: 'Playfair Display', serif; font-size: 28px; color: var(--text-dark); margin-bottom: 15px;">Catalogo in Costruzione</h3>
+	            <p style="color: var(--text-gray); font-size: 16px; max-width: 400px; margin: 0 auto;">I nostri libri in evidenza arriveranno presto. Nel frattempo, esplora il nostro catalogo completo.</p>
+	            <a th:href="@{/books}" class="btn btn-primary" style="margin-top: 30px;">
+	                Esplora Tutti i Libri
+	            </a>
+	        </div>
+	    </div>
+	</section>
+    <!-- Categories Section -->
+    <section class="categories-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Browse by Category</h2>
+                <p class="section-subtitle">Find your next favorite in your preferred genre</p>
+            </div>
+            
+            <div class="categories-grid">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23dc2626' d='M52 8H44V4a2 2 0 0 0-2-2H22a2 2 0 0 0-2 2v4h-8a2 2 0 0 0-2 2v48a2 2 0 0 0 2 2h40a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zM24 6h16v2H24zm26 50H14V12h6v2a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2v-2h6z'/%3E%3Cpath fill='%23ef4444' d='M32 20c-6.617 0-12 5.383-12 12s5.383 12 12 12 12-5.383 12-12-5.383-12-12-12zm0 20c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z'/%3E%3Cpath fill='%23dc2626' d='M32 28a1 1 0 0 0-1 1v3a1 1 0 0 0 .293.707l2 2a1 1 0 0 0 1.414-1.414L33 31.586V29a1 1 0 0 0-1-1z'/%3E%3C/svg%3E" alt="Fiction">
+                    </div>
+                    <h3>Fiction</h3>
+                    <p>Immerse yourself in imaginative worlds and compelling narratives that transport you beyond reality.</p>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23db2777' d='M32 10c-4.5 0-8.7 1.8-11.8 5.1-3.1 3.2-4.8 7.6-4.7 12.1.1 4.5 2 8.7 5.2 11.8L32 50.3 43.3 39c3.2-3.1 5.1-7.3 5.2-11.8.1-4.5-1.6-8.9-4.7-12.1C40.7 11.8 36.5 10 32 10z'/%3E%3Cpath fill='%23ec4899' d='M32 26c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5z'/%3E%3C/svg%3E" alt="Romance">
+                    </div>
+                    <h3>Romance</h3>
+                    <p>Experience love stories that will make your heart flutter and leave you believing in happily ever after.</p>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23374151' d='M58 56l-16-16c3.1-3.8 5-8.7 5-14 0-12.1-9.9-22-22-22S3 13.9 3 26s9.9 22 22 22c5.3 0 10.2-1.9 14-5l16 16c.8.8 1.8 1.2 2.8 1.2s2-.4 2.8-1.2c1.6-1.5 1.6-4.1.4-5.6zM9 26c0-8.8 7.2-16 16-16s16 7.2 16 16-7.2 16-16 16S9 34.8 9 26z'/%3E%3Cpath fill='%234b5563' d='M25 14c-6.6 0-12 5.4-12 12h6c0-3.3 2.7-6 6-6v-6z'/%3E%3C/svg%3E" alt="Mystery">
+                    </div>
+                    <h3>Mystery & Thriller</h3>
+                    <p>Unravel complex puzzles and follow thrilling investigations that keep you guessing until the end.</p>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%232563eb' d='M32 4C16.536 4 4 16.536 4 32s12.536 28 28 28 28-12.536 28-28S47.464 4 32 4zm0 50c-12.15 0-22-9.85-22-22s9.85-22 22-22 22 9.85 22 22-9.85 22-22 22z'/%3E%3Cpath fill='%233b82f6' d='M32 14c-9.941 0-18 8.059-18 18h4c0-7.732 6.268-14 14-14v-4z'/%3E%3Cpath fill='%232563eb' d='M42 28h-8v-8c0-1.104-.896-2-2-2s-2 .896-2 2v10c0 1.104.896 2 2 2h10c1.104 0 2-.896 2-2s-.896-2-2-2z'/%3E%3Ccircle fill='%233b82f6' cx='32' cy='32' r='3'/%3E%3C/svg%3E" alt="Sci-Fi">
+                    </div>
+                    <h3>Science Fiction</h3>
+                    <p>Explore futuristic worlds and groundbreaking concepts that challenge your imagination.</p>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23ea580c' d='M54 10H42l-2-4c-.6-1.2-1.8-2-3.2-2H27.2c-1.3 0-2.6.8-3.2 2l-2 4H10c-2.2 0-4 1.8-4 4v40c0 2.2 1.8 4 4 4h44c2.2 0 4-1.8 4-4V14c0-2.2-1.8-4-4-4z'/%3E%3Cpath fill='%23f97316' d='M32 20c-8.8 0-16 7.2-16 16s7.2 16 16 16 16-7.2 16-16-7.2-16-16-16zm0 26c-5.5 0-10-4.5-10-10s4.5-10 10-10 10 4.5 10 10-4.5 10-10 10z'/%3E%3Ccircle fill='%23ea580c' cx='32' cy='36' r='6'/%3E%3Ccircle fill='%23fff' cx='48' cy='18' r='2'/%3E%3C/svg%3E" alt="Non-Fiction">
+                    </div>
+                    <h3>Non-Fiction</h3>
+                    <p>Expand your knowledge with insightful books on history, science, and personal development.</p>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%2316a34a' d='M32 4l-6 12-14 2 10 10-2 14 12-6 12 6-2-14 10-10-14-2z'/%3E%3Cpath fill='%2322c55e' d='M32 16l-3.5 7-8 1.2 5.8 5.6-1.4 8L32 34l7.1 3.8-1.4-8 5.8-5.6-8-1.2z'/%3E%3Ccircle fill='%23fbbf24' cx='24' cy='48' r='6'/%3E%3Ccircle fill='%23fbbf24' cx='40' cy='48' r='6'/%3E%3C/svg%3E" alt="Children">
+                    </div>
+                    <h3>Children's Books</h3>
+                    <p>Delightful stories and educational books that inspire young minds and foster a love of reading.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+	<!-- Footer -->
+	   <footer class="footer">
+	       <div class="container">
+	           <div class="footer-content">
+	               <div class="footer-section">
+	                   <h3>About SiwBooks</h3>
+	                   <p>Your premier destination for discovering exceptional literature. We bring together readers and the stories that matter most, offering a carefully curated selection of books across all genres.</p>
+	                   <div class="social-links">
+	                       <a href="#"><i class="fab fa-facebook-f"></i></a>
+	                       <a href="#"><i class="fab fa-twitter"></i></a>
+	                       <a href="#"><i class="fab fa-instagram"></i></a>
+	                       <a href="#"><i class="fab fa-pinterest"></i></a>
+	                   </div>
+	               </div>
+	               
+	               <div class="footer-section">
+	                   <h3>Quick Links</h3>
+	                   <ul>
+	                       <li><a th:href="@{/}">Home</a></li>
+	                       <li><a th:href="@{/books}">All Books</a></li>
+	                       <li><a th:href="@{/authors}">Authors</a></li>
+						    <li><a th:href="@{/admin}" sec:authorize="hasAuthority('ROLE_ADMIN')">Admin</a></li>
+	                      
+	                   </ul>
+	               </div>
+	               
+	             
+	               
+	               <div class="footer-section">
+	                   <h3>Contact Info</h3>
+	                   <ul>
+	                       <li><i class="fas fa-map-marker-alt"></i> 123 Book Street, Literary City</li>
+	                       <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+	                       <li><i class="fas fa-envelope"></i> info@siwbooks.com</li>
+	                       <li><i class="fas fa-clock"></i> Mon - Fri: 9AM - 8PM</li>
+	                   </ul>
+	               </div>
+	           </div>
+	           
+	           <div class="footer-bottom">
+	               <p>&copy; 2025 SiwBooks. All rights reserved. | Privacy Policy | Terms of Service</p>
+	           </div>
+	       </div>
+	   </footer>
+                    

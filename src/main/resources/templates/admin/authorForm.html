@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <title th:text="${authorId == null} ? 'Aggiungi Autore – SiwBooks Admin' : 'Modifica Autore – SiwBooks Admin'">Author Form – SiwBooks Admin</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&family=Poppins:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-dark: #000000;
+            --primary-accent: #dc2626;
+            --secondary-accent: #ef4444;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --text-light: #9ca3af;
+            --bg-light: #f9fafb;
+            --bg-cream: #fef3c7;
+            --bg-white: #ffffff;
+            --border-light: #e5e7eb;
+            --shadow-light: 0 2px 10px rgba(0,0,0,0.08);
+            --shadow-medium: 0 5px 20px rgba(0,0,0,0.1);
+            --shadow-hover: 0 10px 30px rgba(0,0,0,0.15);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --danger-color: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--bg-light);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles */
+        .header-wrapper {
+            background: var(--bg-white);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header-top {
+            background: #000000;
+            color: var(--bg-white);
+            padding: 8px 0;
+            font-size: 12px;
+        }
+
+        .header-top-content {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-top-left {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-top-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-top a {
+            color: var(--bg-white);
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .header-top a:hover {
+            opacity: 0.8;
+        }
+
+        .main-header {
+            background: var(--bg-white);
+            padding: 20px 0;
+        }
+
+        .header-content {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-white);
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: var(--primary-accent);
+        }
+
+        /* Admin Badge */
+        .admin-badge {
+            background: var(--primary-accent);
+            color: var(--bg-white);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .main-nav a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--primary-accent);
+        }
+
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-accent);
+            transition: width 0.3s;
+        }
+
+        .main-nav a:hover::after,
+        .main-nav a.active::after {
+            width: 100%;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-icons button,
+        .header-icons a {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: color 0.3s;
+            text-decoration: none;
+        }
+
+        .header-icons button:hover,
+        .header-icons a:hover {
+            color: var(--primary-accent);
+        }
+
+        /* Main Content Wrapper */
+        .main-content {
+            flex: 1;
+            margin-top: 108px; /* Height of fixed header */
+        }
+
+        /* Container */
+        .container {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 40px 15px;
+        }
+
+        /* Admin Header */
+        .admin-header {
+            background: linear-gradient(135deg, #fff7ed 0%, #fee2e2 100%);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .admin-header-content p {
+            color: var(--text-gray);
+            font-size: 16px;
+        }
+
+        .back-to-authors {
+            padding: 12px 25px;
+            background: var(--primary-dark);
+            color: var(--bg-white);
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-to-authors:hover {
+            background: var(--primary-accent);
+            transform: translateY(-2px);
+        }
+
+        /* Form Container */
+        .form-container {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: var(--shadow-light);
+            margin-bottom: 30px;
+        }
+
+        .form-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--primary-dark);
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 15px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .alert i {
+            font-size: 20px;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-label span {
+            color: var(--primary-accent);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+            background: var(--bg-white);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .form-control.is-invalid {
+            border-color: var(--danger-color) !important;
+            background-image: none;
+        }
+
+        .invalid-feedback {
+            display: block;
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--danger-color);
+            font-weight: 500;
+        }
+
+        /* Checkbox Styles */
+        .form-check {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid var(--border-light);
+            transition: all 0.3s;
+        }
+
+        .form-check:hover {
+            border-color: var(--primary-accent);
+            background: rgba(220, 38, 38, 0.02);
+        }
+
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: var(--primary-accent);
+        }
+
+        .form-check-label {
+            cursor: pointer;
+            font-size: 15px;
+            color: var(--text-dark);
+            font-weight: 500;
+            user-select: none;
+        }
+
+        /* Books Selection */
+        .books-section {
+            background: var(--bg-light);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+            border: 2px solid var(--border-light);
+        }
+
+        .books-section h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .books-section h4 i {
+            color: var(--primary-accent);
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-gray);
+        }
+
+        .search-input {
+            padding-left: 45px;
+        }
+
+        .books-list-container {
+            max-height: 300px;
+            overflow-y: auto;
+            background: var(--bg-white);
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .book-check {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            transition: background 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .book-check:hover {
+            background: var(--bg-light);
+            border-color: var(--border-light);
+        }
+
+        .book-check-input {
+            width: 18px;
+            height: 18px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: var(--primary-accent);
+        }
+
+        .book-check-label {
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-dark);
+            user-select: none;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-accent);
+            color: var(--bg-white);
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-accent);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-secondary {
+            background: var(--text-gray);
+            color: var(--bg-white);
+        }
+
+        .btn-secondary:hover {
+            background: var(--text-dark);
+            transform: translateY(-2px);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 35px;
+            padding-top: 35px;
+            border-top: 2px solid var(--border-light);
+        }
+
+        /* Photo Section */
+        .photo-section {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: var(--shadow-light);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: var(--primary-dark);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary-accent);
+        }
+
+        .photo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .author-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--border-light);
+            box-shadow: var(--shadow-medium);
+            transition: all 0.3s;
+        }
+
+        .author-photo:hover {
+            transform: scale(1.05);
+            border-color: var(--primary-accent);
+        }
+
+        .no-photo {
+            width: 200px;
+            height: 200px;
+            background: var(--bg-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            border: 4px dashed var(--border-light);
+            color: var(--text-light);
+            font-size: 48px;
+        }
+
+        .upload-section {
+            background: var(--bg-light);
+            border: 2px dashed var(--border-light);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .upload-section:hover {
+            border-color: var(--primary-accent);
+            background: rgba(220, 38, 38, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .input-group .form-control {
+            flex: 1;
+            border-radius: 8px 0 0 8px;
+        }
+
+        .input-group .btn {
+            border-radius: 0 8px 8px 0;
+        }
+
+       
+		/* Footer */
+		.footer {
+		    background: var(--primary-dark);
+		    padding: 60px 0 30px;
+		    color: var(--bg-white);
+		    width: 100%;
+		}
+
+        .footer-container {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: var(--bg-white);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section li {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--primary-accent);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.1);
+            color: var(--bg-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: background 0.3s;
+            border-radius: 50%;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-accent);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 991px) {
+            .admin-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-nav {
+                display: none;
+            }
+            
+            .form-container {
+                padding: 25px;
+            }
+            
+            .form-title {
+                font-size: 28px;
+            }
+            
+            .author-photo,
+            .no-photo {
+                width: 150px;
+                height: 150px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-wrapper">
+        <!-- Top Bar -->
+        <div class="header-top">
+            <div class="header-top-content">
+                <div class="header-top-left">
+                    <span><i class="fas fa-phone"></i> +1 (555) 123-4567</span>
+                    <span><i class="fas fa-envelope"></i> info@siwbooks.com</span>
+                </div>
+                <div class="header-top-right">
+                    <span>Admin Panel</span>
+                    <div sec:authorize="isAuthenticated()">
+                        <span>Welcome, <span sec:authentication="name"></span></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" style="background: none; border: none; color: white; cursor: pointer;">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Header -->
+        <div class="main-header">
+            <div class="header-content">
+                <a th:href="@{/}" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="logo-text">Siw<span>Books</span></div>
+                    <span class="admin-badge">Admin</span>
+                </a>
+                
+                <nav class="main-nav">
+                    <a th:href="@{/}">Home</a>
+                    <a th:href="@{/books}">Books</a>
+                    <a th:href="@{/authors}">Authors</a>
+                    <a th:href="@{/admin}" class="active" sec:authorize="hasAuthority('ROLE_ADMIN')">Admin</a>
+                </nav>
+                
+                <div class="header-icons">
+                    <button type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <a href="#">
+                        <i class="fas fa-bell"></i>
+                    </a>
+                    <a href="#">
+                        <i class="fas fa-cog"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <!-- Admin Header -->
+            <div class="admin-header">
+                <div class="admin-header-content">
+                    <h1>Pannello di Amministrazione</h1>
+                    <p>Gestione autori - Aggiungi o modifica i dettagli dell'autore</p>
+                </div>
+                <a th:href="@{/admin/authors}" class="back-to-authors">
+                    <i class="fas fa-arrow-left"></i>
+                    Torna agli Autori
+                </a>
+            </div>
+
+            <!-- Form Container -->
+            <div class="form-container">
+                <h2 class="form-title">
+                    <span th:if="${authorId == null}">
+                        <i class="fas fa-user-plus"></i> Aggiungi Nuovo Autore
+                    </span>
+                    <span th:unless="${authorId == null}">
+                        <i class="fas fa-user-edit"></i> Modifica Autore
+                    </span>
+                </h2>
+
+                <!-- Success Message -->
+                <div th:if="${formSuccess}" class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <span th:text="${formSuccess}">Success message</span>
+                </div>
+                
+                
+                <!-- Error Messages -->
+                <div th:if="${error}" class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span th:text="${error}">Error message</span>
+                </div>
+
+                <form th:action="${authorId == null} ? @{/admin/authors/add} : @{/admin/authors/{id}/edit(id=${authorId})}" 
+                      th:object="${authorDto}" 
+                      method="post"
+                      id="authorForm">
+                    
+                    <!-- Global Errors -->
+                    <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div>
+                            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}" style="margin: 0;">Error message</p>
+                        </div>
+                    </div>
+                    
+                    
+                    <!-- Duplicate Warning Alert -->
+                    <div id="duplicateAlert" class="alert alert-danger" style="display: none;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span id="duplicateMessage">Un autore con questo nome e cognome è già registrato nel sistema.</span>
+                    </div>
+
+                    <!-- Server-side duplicate error alert -->
+                    <div th:if="${#fields.hasErrors('firstName')} and ${#strings.contains(#fields.errors('firstName')[0], 'già registrato')}" 
+                         class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span th:text="${#fields.errors('firstName')[0]}">Messaggio di errore duplicato</span>
+                    </div>
+                    
+                    <!-- Name Fields Row -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName" class="form-label">
+                                Nome <span>*</span>
+                            </label>
+                            <input type="text" 
+                                   id="firstName"
+                                   class="form-control" 
+                                   th:field="*{firstName}" 
+                                   placeholder="Inserisci il nome"
+                                   required 
+                                   th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid' : ''"
+                                   onblur="checkDuplicateAuthor()">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">
+                                Error message
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName" class="form-label">
+                                Cognome <span>*</span>
+                            </label>
+                            <input type="text" 
+                                   id="lastName"
+                                   class="form-control" 
+                                   th:field="*{lastName}" 
+                                   placeholder="Inserisci il cognome"
+                                   required 
+                                   th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid' : ''"
+                                   onblur="checkDuplicateAuthor()">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">
+                                Error message
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Date and Nationality Row -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dateOfBirth" class="form-label">
+                                Data di Nascita <span>*</span>
+                            </label>
+                            <input type="date" 
+                                   id="dateOfBirth"
+                                   class="form-control" 
+                                   th:field="*{dateOfBirth}" 
+                                   required 
+                                   th:classappend="${#fields.hasErrors('dateOfBirth')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}">
+                                Error message
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nationality" class="form-label">
+                                Nazionalità
+                            </label>
+                            <input type="text" 
+                                   id="nationality"
+                                   class="form-control" 
+                                   th:field="*{nationality}" 
+                                   placeholder="Es. Italiana"
+                                   th:classappend="${#fields.hasErrors('nationality')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('nationality')}" th:errors="*{nationality}">
+                                Error message
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Death Status Section -->
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" 
+                                   type="checkbox" 
+                                   th:field="*{dead}" 
+                                   id="isDeadCheckbox" 
+                                   onclick="toggleDateOfDeath()">
+                            <label class="form-check-label" for="isDeadCheckbox">
+                                <i class="fas fa-cross"></i> L'autore è deceduto
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Date of Death -->
+                    <div class="form-group" id="dateOfDeathSection" style="display: none;">
+                        <label for="dateOfDeath" class="form-label">
+                            Data di Morte <span>*</span>
+                        </label>
+                        <input type="date" 
+                               id="dateOfDeath"
+                               class="form-control" 
+                               th:field="*{dateOfDeath}" 
+                               th:classappend="${#fields.hasErrors('dateOfDeath')} ? 'is-invalid' : ''">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('dateOfDeath')}" th:errors="*{dateOfDeath}">
+                            Error message
+                        </div>
+                    </div>
+
+                    <!-- Books Association (only for editing) -->
+                    <div th:if="${authorId != null}" class="books-section">
+                        <h4>
+                            <i class="fas fa-books"></i>
+                            Libri Associati a Questo Autore
+                        </h4>
+                        
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" 
+                                   id="bookSearch" 
+                                   onkeyup="filterBooks()" 
+                                   class="form-control search-input" 
+                                   placeholder="Cerca libri per titolo o anno...">
+                        </div>
+
+                        <div class="books-list-container" id="bookListContainer">
+                            <div class="book-check" th:each="book : ${allBooks}">
+                                <input class="book-check-input" 
+                                       type="checkbox" 
+                                       name="selectedBooks"
+                                       th:value="${book.id}"
+                                       th:id="'book-' + ${book.id}"
+                                       th:checked="${author.books.contains(book)}">
+                                <label class="book-check-label" 
+                                       th:for="'book-' + ${book.id}"
+                                       th:text="${book.title} + ' (' + ${book.year} + ')'">
+                                    Book Title (Year)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Salva Dati Autore
+                        </button>
+                        <a th:href="@{/admin/authors}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i>
+                            Annulla
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Photo Management Section (only for existing authors) -->
+            <div th:if="${authorId != null}" class="photo-section">
+                <h3 class="section-title">
+                    <i class="fas fa-camera"></i>
+                    Foto dell'Autore
+                </h3>
+                
+                <!-- Success/Error Messages -->
+                <div th:if="${success}" class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <span th:text="${success}">Success message</span>
+                </div>
+                <div th:if="${error}" class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span th:text="${error}">Error message</span>
+                </div>
+                
+                <!-- Current Photo -->
+                <div class="photo-container">
+                    <img th:if="${authorPhoto != null}" 
+                         th:src="@{/image/author/{id}(id=${authorId})}" 
+                         alt="Foto autore" 
+                         class="author-photo"/>
+                    <div th:if="${authorPhoto == null}" class="no-photo">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                
+                <!-- Upload Section -->
+                <div class="upload-section">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h4 style="color: var(--text-dark); margin-bottom: 10px;">
+                        <span th:if="${authorPhoto != null}">Sostituisci Foto</span>
+                        <span th:if="${authorPhoto == null}">Carica Foto Profilo</span>
+                    </h4>
+                    <p style="color: var(--text-gray); margin-bottom: 20px;">
+                        Formati supportati: JPG, JPEG, PNG | Dimensione massima: 5MB
+                    </p>
+                    <form th:action="@{/admin/authors/{id}/photo(id=${authorId})}" 
+                          method="post" 
+                          enctype="multipart/form-data">
+                        <div class="input-group">
+                            <input type="file" 
+                                   class="form-control" 
+                                   name="file" 
+                                   accept="image/jpeg,image/jpg,image/png"
+                                   required>
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-upload"></i>
+                                <span th:if="${authorPhoto != null}">Sostituisci</span>
+                                <span th:if="${authorPhoto == null}">Carica Foto</span>
+                            </button>
+                        </div>
+                        <div style="margin-top: 15px; font-size: 12px; color: var(--text-light);">
+                            <i class="fas fa-info-circle"></i> 
+                            La foto verrà automaticamente ridimensionata e ottimizzata
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info Section for New Authors -->
+            <div th:if="${authorId == null}" class="photo-section">
+                <div style="text-align: center; padding: 40px; background: var(--bg-cream); border-radius: 8px;">
+                    <i class="fas fa-info-circle" style="font-size: 48px; color: var(--warning-color); margin-bottom: 15px;"></i>
+                    <h4 style="color: var(--text-dark); margin-bottom: 10px;">Gestione Foto e Libri</h4>
+                    <p style="color: var(--text-gray); margin-bottom: 20px;">Dopo aver salvato l'autore, potrai gestire la sua foto profilo e associare i libri in questa sezione.</p>
+                    <div style="background: var(--bg-white); padding: 20px; border-radius: 6px; margin-top: 20px;">
+                        <h5 style="color: var(--text-dark); margin-bottom: 10px;">
+                            <i class="fas fa-shield-check" style="color: var(--success-color);"></i> 
+                            Controllo Duplicati Attivo
+                        </h5>
+                        <p style="color: var(--text-gray); font-size: 14px; margin: 0;">
+                            Il sistema controlla automaticamente che non esistano autori con lo stesso nome e cognome. 
+                            Se inserisci un autore già presente, riceverai un avviso prima del salvataggio.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Admin Panel</h3>
+                    <p>Pannello di amministrazione SiwBooks. Gestisci facilmente tutti i contenuti del tuo bookstore online.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a th:href="@{/}">Home</a></li>
+                        <li><a th:href="@{/admin}">Dashboard Admin</a></li>
+                        <li><a th:href="@{/admin/books}">Gestisci Libri</a></li>
+                        <li><a th:href="@{/admin/authors}">Gestisci Autori</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Supporto</h3>
+                    <ul>
+                        <li><a href="#">Documentazione</a></li>
+                        <li><a href="#">FAQ Admin</a></li>
+                        <li><a href="#">Contatta Supporto</a></li>
+                        <li><a href="#">Changelog</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Sistema</h3>
+                    <ul>
+                        <li><i class="fas fa-server"></i> Server: Online</li>
+                        <li><i class="fas fa-database"></i> Database: Connected</li>
+                        <li><i class="fas fa-shield-alt"></i> Security: Active</li>
+                        <li><i class="fas fa-code-branch"></i> Version: 1.0.0</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 SiwBooks Admin Panel. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+	<script>
+	    // Funzione per controllare duplicati in tempo reale
+	    function checkDuplicateAuthor() {
+	        const firstName = document.getElementById('firstName').value.trim();
+	        const lastName = document.getElementById('lastName').value.trim();
+	        
+	        // Ottieni l'ID direttamente dal form action o dall'URL
+	        const pathMatch = window.location.pathname.match(/\/admin\/authors\/(\d+)\/edit/);
+	        const authorId = pathMatch ? pathMatch[1] : null;
+	        
+	        if (firstName === '' || lastName === '') {
+	            document.getElementById('duplicateAlert').style.display = 'none';
+	            document.getElementById('firstName').style.borderColor = '';
+	            document.getElementById('lastName').style.borderColor = '';
+	            return;
+	        }
+	        
+	        const url = '/admin/authors/check-duplicate';
+	        const params = new URLSearchParams({
+	            firstName: firstName,
+	            lastName: lastName
+	        });
+	        
+	        // Se stiamo modificando, escludi l'autore corrente dal controllo
+	        if (authorId) {
+	            params.append('excludeId', authorId);
+	            console.log('Checking duplicate for edit mode, excludeId:', authorId);
+	        } else {
+	            console.log('Checking duplicate for create mode');
+	        }
+	        
+	        fetch(url + '?' + params.toString())
+	            .then(response => response.json())
+	            .then(data => {
+	                console.log('Response:', data);
+	                const alertDiv = document.getElementById('duplicateAlert');
+	                const messageSpan = document.getElementById('duplicateMessage');
+	                
+	                if (data.success && data.isDuplicate) {
+	                    messageSpan.textContent = "⚠️ ATTENZIONE: Un autore con il nome '" + firstName + 
+	                        "' e cognome '" + lastName + "' è già registrato nel sistema!";
+	                    alertDiv.style.display = 'block';
+	                    alertDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	                    
+	                    document.getElementById('firstName').style.borderColor = '#dc2626';
+	                    document.getElementById('lastName').style.borderColor = '#dc2626';
+	                } else {
+	                    alertDiv.style.display = 'none';
+	                    document.getElementById('firstName').style.borderColor = '';
+	                    document.getElementById('lastName').style.borderColor = '';
+	                }
+	            })
+	            .catch(error => {
+	                console.error('Errore nel controllo duplicati:', error);
+	                document.getElementById('duplicateAlert').style.display = 'none';
+	            });
+	    }
+
+	    // Validazione del form prima del submit
+	    function validateForm() {
+	        const duplicateAlert = document.getElementById('duplicateAlert');
+	        if (duplicateAlert && duplicateAlert.style.display !== 'none') {
+	            alert('Non è possibile salvare: esiste già un autore con questo nome e cognome.');
+	            return false;
+	        }
+	        return true;
+	    }
+
+	    // Funzione per il checkbox della data di morte
+	    function toggleDateOfDeath() {
+	        const checkbox = document.getElementById('isDeadCheckbox');
+	        const dateSection = document.getElementById('dateOfDeathSection');
+	        if (dateSection) {
+	            dateSection.style.display = checkbox.checked ? 'block' : 'none';
+	            
+	            if (!checkbox.checked) {
+	                const dateInput = document.getElementById('dateOfDeath');
+	                if (dateInput) {
+	                    dateInput.value = '';
+	                }
+	            }
+	        }
+	    }
+
+	    // Funzione per filtrare la lista dei libri
+	    function filterBooks() {
+	        const input = document.getElementById('bookSearch');
+	        if (!input) return;
+	        
+	        const filter = input.value.toLowerCase();
+	        const listContainer = document.getElementById('bookListContainer');
+	        const items = listContainer.getElementsByClassName('book-check');
+	        
+	        for (let i = 0; i < items.length; i++) {
+	            const label = items[i].querySelector('.book-check-label');
+	            if (label) {
+	                const txtValue = label.textContent || label.innerText;
+	                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+	                    items[i].style.display = "";
+	                } else {
+	                    items[i].style.display = "none";
+	                }
+	            }
+	        }
+	    }
+
+	    // Inizializza tutto al caricamento della pagina
+	    document.addEventListener('DOMContentLoaded', function() {
+	        toggleDateOfDeath();
+	        
+	        const firstInput = document.querySelector('input[type="text"]');
+	        if (firstInput) {
+	            firstInput.focus();
+	        }
+	        
+	        // Aggiungi validazione al form submit
+	        const form = document.getElementById('authorForm');
+	        if (form) {
+	            form.addEventListener('submit', function(e) {
+	                if (!validateForm()) {
+	                    e.preventDefault();
+	                }
+	            });
+	        }
+	        
+	        // Controllo duplicati all'avvio se ci sono già valori
+	        const firstName = document.getElementById('firstName');
+	        const lastName = document.getElementById('lastName');
+	        if (firstName && lastName && firstName.value && lastName.value) {
+	            setTimeout(checkDuplicateAuthor, 500);
+	        }
+
+	        // Animazione per le sezioni
+	        const sections = document.querySelectorAll('.form-container, .photo-section');
+	        sections.forEach((section, index) => {
+	            setTimeout(() => {
+	                section.style.opacity = '0';
+	                section.style.transform = 'translateY(20px)';
+	                section.style.transition = 'all 0.5s ease';
+	                
+	                setTimeout(() => {
+	                    section.style.opacity = '1';
+	                    section.style.transform = 'translateY(0)';
+	                }, 100);
+	            }, index * 200);
+	        });
+	    });
+	</script>
+</body>
+</html>

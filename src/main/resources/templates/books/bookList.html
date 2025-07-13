@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <title>Books Catalog – SiwBooks</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&family=Poppins:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-dark: #000000;
+            --primary-accent: #dc2626;
+            --secondary-accent: #ef4444;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --text-light: #9ca3af;
+            --bg-light: #f9fafb;
+            --bg-cream: #fef3c7;
+            --bg-white: #ffffff;
+            --border-light: #e5e7eb;
+            --shadow-light: 0 2px 10px rgba(0,0,0,0.08);
+            --shadow-medium: 0 5px 20px rgba(0,0,0,0.1);
+            --shadow-hover: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--bg-light);
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header-wrapper {
+            background: var(--bg-white);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header-top {
+            background: #000000;
+            color: var(--bg-white);
+            padding: 8px 0;
+            font-size: 12px;
+        }
+
+        .header-top-content {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-top-left {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-top-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-top a {
+            color: var(--bg-white);
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .header-top a:hover {
+            opacity: 0.8;
+        }
+
+        .main-header {
+            background: var(--bg-white);
+            padding: 20px 0;
+        }
+
+        .header-content {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-white);
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: var(--primary-accent);
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .main-nav a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--primary-accent);
+        }
+
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-accent);
+            transition: width 0.3s;
+        }
+
+        .main-nav a:hover::after,
+        .main-nav a.active::after {
+            width: 100%;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-icons button,
+        .header-icons a {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: color 0.3s;
+            text-decoration: none;
+        }
+
+        .header-icons button:hover,
+        .header-icons a:hover {
+            color: var(--primary-accent);
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-top: 108px;
+            background: linear-gradient(135deg, #fff7ed 0%, #fee2e2 100%);
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            font-family: 'Crimson Text', serif;
+            font-size: 20px;
+            color: var(--text-gray);
+            font-style: italic;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Filters Section */
+        .filters-section {
+            background: var(--bg-white);
+            padding: 30px 0;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 40px;
+        }
+
+        .filters-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-select {
+            padding: 8px 15px;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            font-size: 14px;
+            color: var(--text-dark);
+            background: var(--bg-white);
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .filter-select:hover,
+        .filter-select:focus {
+            border-color: var(--primary-accent);
+            outline: none;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            padding: 8px 15px;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            font-size: 14px;
+            width: 250px;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-accent);
+            outline: none;
+        }
+
+        .search-btn {
+            padding: 8px 20px;
+            background: var(--primary-accent);
+            color: var(--bg-white);
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background: var(--secondary-accent);
+        }
+
+        /* Books Grid */
+        .books-section {
+            padding: 40px 0 80px;
+        }
+
+        .results-info {
+            margin-bottom: 30px;
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .book-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: transparent;
+        }
+
+        .book-card-image {
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-light);
+            height: 320px;
+        }
+
+        .book-card-image img,
+        .book-cover-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .book-card:hover .book-card-image img {
+            transform: scale(1.05);
+        }
+
+        .no-image {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-light);
+            color: var(--text-light);
+            font-size: 60px;
+        }
+
+        .book-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--primary-accent);
+            color: var(--bg-white);
+            padding: 5px 15px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .book-card-content {
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        .book-card-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 20px;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-weight: 600;
+            transition: color 0.3s;
+            /* CORREZIONE: Gestione testo lungo con line-height per più righe */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-height: 1.3;
+            min-height: 2.6em; /* Spazio per 2 righe */
+        }
+
+        .book-card:hover .book-card-title {
+            color: var(--primary-accent);
+        }
+
+        .book-card-author {
+            color: var(--text-gray);
+            font-size: 13px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            /* CORREZIONE: Gestione lista autori con wrap */
+            line-height: 1.4;
+            min-height: 1.4em;
+        }
+
+        .book-card-year {
+            color: var(--text-light);
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+
+        .book-card-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-details {
+            padding: 10px 25px;
+            background: var(--primary-dark);
+            color: var(--bg-white);
+            text-decoration: none;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 1px solid var(--primary-dark);
+        }
+
+        .btn-details:hover {
+            background: transparent;
+            color: var(--primary-dark);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 80px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            color: var(--text-gray);
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 50px;
+        }
+
+        .pagination a,
+        .pagination span {
+            padding: 10px 15px;
+            border: 1px solid var(--border-light);
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .pagination a:hover {
+            border-color: var(--primary-accent);
+            color: var(--primary-accent);
+        }
+
+        .pagination .active {
+            background: var(--primary-accent);
+            color: var(--bg-white);
+            border-color: var(--primary-accent);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-dark);
+            padding: 60px 0 30px;
+            color: var(--bg-white);
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: var(--bg-white);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section li {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--primary-accent);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.1);
+            color: var(--bg-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: background 0.3s;
+            border-radius: 50%;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-accent);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 991px) {
+            .filters-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .search-input {
+                flex: 1;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-nav {
+                display: none;
+            }
+            
+            .page-header h1 {
+                font-size: 36px;
+            }
+            
+            .books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-wrapper">
+        <!-- Top Bar -->
+        <div class="header-top">
+            <div class="header-top-content">
+                <div class="header-top-left">
+                    <span><i class="fas fa-phone"></i> +1 (555) 123-4567</span>
+                    <span><i class="fas fa-envelope"></i> info@siwbooks.com</span>
+                </div>
+                <div class="header-top-right">
+                    <a th:href="@{/login}" sec:authorize="isAnonymous()">
+                        <i class="fas fa-user"></i> Login
+                    </a>
+                    <a th:href="@{/register}" sec:authorize="isAnonymous()">Register</a>
+                    <div sec:authorize="isAuthenticated()">
+                        <span>Welcome, <span sec:authentication="name"></span></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" style="background: none; border: none; color: white; cursor: pointer;">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Header -->
+        <div class="main-header">
+            <div class="header-content">
+                <a th:href="@{/}" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="logo-text">Siw<span>Books</span></div>
+                </a>
+                
+                <nav class="main-nav">
+                    <a th:href="@{/}">Home</a>
+                    <a th:href="@{/books}" class="active">Books</a>
+                    <a th:href="@{/authors}">Authors</a>
+                    <a th:href="@{/admin}" sec:authorize="hasAuthority('ROLE_ADMIN')">Admin</a>
+                </nav>
+                
+                <div class="header-icons">
+                    <button type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <a href="#">
+                        <i class="fas fa-heart"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Our Book Collection</h1>
+            <p>Explore thousands of titles across all genres</p>
+        </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="filters-section">
+        <div class="container">
+            <div class="filters-container">
+                <div class="filter-group">
+                    <label class="filter-label">Sort By:</label>
+                    <select class="filter-select">
+                        <option>Title A-Z</option>
+                        <option>Title Z-A</option>
+                        <option>Year (Newest)</option>
+                        <option>Year (Oldest)</option>
+                    </select>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Search books...">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Books Grid -->
+    <section class="books-section">
+        <div class="container">
+            <div class="results-info" th:if="${books != null && !books.isEmpty()}">
+                Showing <span th:text="${books.size()}">0</span> books
+            </div>
+            
+            <!-- Books Grid -->
+            <div class="books-grid" th:if="${books != null && !books.isEmpty()}">
+                <div class="book-card" th:each="book : ${books}">
+                    <div class="book-card-image">
+                        <img th:if="${!book.images.isEmpty()}"
+                             th:src="@{/image/book/{id}(id=${book.images.iterator().next().id})}"
+                             th:alt="${book.title}"
+                             class="book-cover-thumb"/>
+                        <div th:if="${book.images.isEmpty()}" class="no-image">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <span class="book-badge" th:if="${book.year != null && book.year >= 2024}">New</span>
+                    </div>
+                    <div class="book-card-content">
+                        <h3 class="book-card-title" th:text="${book.title}">Book Title</h3>
+                        <p class="book-card-author">
+                            <!-- CORREZIONE: Gestione corretta autori con virgole e spaziatura -->
+                            <th:block th:each="author,iterStat : ${book.authors}">
+                                <span th:text="${author.firstName} + ' ' + ${author.lastName}">Author Name</span><th:block th:if="${!iterStat.last}">, </th:block>
+                            </th:block>
+                        </p>
+                        <p class="book-card-year" th:text="${book.year != null ? book.year : 'Year N/A'}">2024</p>
+                        <div class="book-card-actions">
+                            <a th:href="@{/books/{id}(id=${book.id})}" class="btn-details">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Empty State -->
+            <div class="empty-state" th:if="${books == null || books.isEmpty()}" style="display: none;">
+                <div class="empty-state-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>No Books Found</h3>
+                <p>Try adjusting your search or filters to find what you're looking for.</p>
+                <button onclick="clearFilters()" class="btn-details">Clear Filters</button>
+            </div>
+            
+            <!-- Pagination (example) -->
+            <div class="pagination" th:if="${books != null && !books.isEmpty()}">
+                <a href="#"><i class="fas fa-chevron-left"></i></a>
+                <span class="active">1</span>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">4</a>
+                <a href="#"><i class="fas fa-chevron-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About SiwBooks</h3>
+                    <p>Your premier destination for discovering exceptional literature. We bring together readers and the stories that matter most, offering a carefully curated selection of books across all genres.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a th:href="@{/}">Home</a></li>
+                        <li><a th:href="@{/books}">All Books</a></li>
+                        <li><a th:href="@{/authors}">Authors</a></li>
+                        <li><a th:href="@{/admin}" sec:authorize="hasAuthority('ROLE_ADMIN')">Admin</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Categories</h3>
+                    <ul>
+                        <li><a href="#">Fiction</a></li>
+                        <li><a href="#">Non-Fiction</a></li>
+                        <li><a href="#">Mystery & Thriller</a></li>
+                        <li><a href="#">Romance</a></li>
+                        <li><a href="#">Science Fiction</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Book Street, Literary City</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@siwbooks.com</li>
+                        <li><i class="fas fa-clock"></i> Mon - Fri: 9AM - 8PM</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 SiwBooks. All rights reserved. | Privacy Policy | Terms of Service</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Store original books data
+        let allBooks = [];
+        let filteredBooks = [];
+
+        // Initialize books data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all book cards and extract their data
+            const bookCards = document.querySelectorAll('.book-card');
+            bookCards.forEach(card => {
+                const titleElement = card.querySelector('.book-card-title');
+                const authorElement = card.querySelector('.book-card-author');
+                const yearElement = card.querySelector('.book-card-year');
+                
+                allBooks.push({
+                    element: card,
+                    title: titleElement ? titleElement.textContent.trim() : '',
+                    author: authorElement ? authorElement.textContent.trim() : '',
+                    year: yearElement ? parseInt(yearElement.textContent) || 0 : 0
+                });
+            });
+            
+            filteredBooks = [...allBooks];
+        });
+
+        // Search functionality
+        function performSearch() {
+            const searchValue = document.querySelector('.search-input').value.toLowerCase();
+            
+            if (searchValue === '') {
+                filteredBooks = [...allBooks];
+            } else {
+                filteredBooks = allBooks.filter(book => 
+                    book.title.toLowerCase().includes(searchValue) || 
+                    book.author.toLowerCase().includes(searchValue)
+                );
+            }
+            
+            applyCurrentSort();
+            updateDisplay();
+        }
+
+        // Search button click
+        document.querySelector('.search-btn').addEventListener('click', performSearch);
+
+        // Search on Enter key
+        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Real-time search as user types
+        document.querySelector('.search-input').addEventListener('input', function() {
+            performSearch();
+        });
+
+        // Sort functionality
+        function applyCurrentSort() {
+            const sortValue = document.querySelector('.filter-select').value;
+            
+            switch(sortValue) {
+                case 'Title A-Z':
+                    filteredBooks.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'Title Z-A':
+                    filteredBooks.sort((a, b) => b.title.localeCompare(a.title));
+                    break;
+                case 'Year (Newest)':
+                    filteredBooks.sort((a, b) => b.year - a.year);
+                    break;
+                case 'Year (Oldest)':
+                    filteredBooks.sort((a, b) => a.year - b.year);
+                    break;
+                case 'Latest First':
+                default:
+                    // Keep original order
+                    break;
+            }
+        }
+
+        // Sort change handler
+        document.querySelector('.filter-select').addEventListener('change', function() {
+            applyCurrentSort();
+            updateDisplay();
+        });
+
+        // Update the display
+        function updateDisplay() {
+            const booksGrid = document.querySelector('.books-grid');
+            const resultsInfo = document.querySelector('.results-info');
+            const emptyState = document.querySelector('.empty-state');
+            
+            if (!booksGrid) return;
+            
+            // Clear current display
+            booksGrid.innerHTML = '';
+            
+            // Show filtered books
+            if (filteredBooks.length > 0) {
+                filteredBooks.forEach(book => {
+                    booksGrid.appendChild(book.element.cloneNode(true));
+                });
+                
+                // Update results count
+                if (resultsInfo) {
+                    resultsInfo.innerHTML = `Showing <span>${filteredBooks.length}</span> books`;
+                    resultsInfo.style.display = 'block';
+                }
+                
+                // Hide empty state
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+                
+                // Show grid
+                booksGrid.style.display = 'grid';
+            } else {
+                // No results
+                if (resultsInfo) {
+                    resultsInfo.style.display = 'none';
+                }
+                
+                // Show empty state
+                if (emptyState) {
+                    emptyState.style.display = 'block';
+                }
+                
+                // Hide grid
+                booksGrid.style.display = 'none';
+            }
+        }
+
+        // Category filter (if you want to add category filtering)
+        document.querySelectorAll('.filter-select')[1]?.addEventListener('change', function() {
+            const category = this.value;
+            
+            if (category === 'All Categories') {
+                // Reset to show all books
+                performSearch();
+            } else {
+                // Filter by category (you would need to add category data to books)
+                // This is a placeholder for category filtering
+                console.log('Category filter:', category);
+            }
+        });
+
+        // Clear all filters
+        function clearFilters() {
+            // Reset search input
+            document.querySelector('.search-input').value = '';
+            
+            // Reset sort to default
+            document.querySelector('.filter-select').value = 'Latest First';
+            
+            // Reset category if exists
+            const categorySelect = document.querySelectorAll('.filter-select')[1];
+            if (categorySelect) {
+                categorySelect.value = 'All Categories';
+            }
+            
+            // Reset filtered books to all books
+            filteredBooks = [...allBooks];
+            
+            // Update display
+            updateDisplay();
+        }
+    </script>
+</body>
+</html>

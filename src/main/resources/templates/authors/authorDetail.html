@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <title th:text="${author?.firstName} + ' ' + ${author?.lastName} + ' – SiwBooks'">Author Detail – SiwBooks</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&family=Poppins:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-dark: #000000;
+            --primary-accent: #dc2626;
+            --secondary-accent: #ef4444;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --text-light: #9ca3af;
+            --bg-light: #f9fafb;
+            --bg-cream: #fef3c7;
+            --bg-white: #ffffff;
+            --border-light: #e5e7eb;
+            --shadow-light: 0 2px 10px rgba(0,0,0,0.08);
+            --shadow-medium: 0 5px 20px rgba(0,0,0,0.1);
+            --shadow-hover: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--bg-light);
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header-wrapper {
+            background: var(--bg-white);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header-top {
+            background: #000000;
+            color: var(--bg-white);
+            padding: 8px 0;
+            font-size: 12px;
+        }
+
+        .header-top-content {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-top-left {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-top-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-top a {
+            color: var(--bg-white);
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .header-top a:hover {
+            opacity: 0.8;
+        }
+
+        .main-header {
+            background: var(--bg-white);
+            padding: 20px 0;
+        }
+
+        .header-content {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-white);
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: var(--primary-accent);
+        }
+
+        /* Admin Badge */
+        .admin-badge {
+            background: var(--primary-accent);
+            color: var(--bg-white);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .main-nav a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--primary-accent);
+        }
+
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-accent);
+            transition: width 0.3s;
+        }
+
+        .main-nav a:hover::after,
+        .main-nav a.active::after {
+            width: 100%;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-icons button,
+        .header-icons a {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: color 0.3s;
+            text-decoration: none;
+        }
+
+        .header-icons button:hover,
+        .header-icons a:hover {
+            color: var(--primary-accent);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 140px 15px 80px;
+        }
+
+        /* Author Detail Layout */
+        .author-detail-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        /* Author Photo Section */
+        .author-photo-section {
+            text-align: center;
+        }
+
+        .author-photo {
+            width: 100%;
+            max-width: 350px;
+            height: 450px;
+            margin: 0 auto 30px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: var(--shadow-medium);
+            background: var(--bg-white);
+        }
+
+        .author-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .placeholder-image {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-light);
+            color: var(--text-light);
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .placeholder-image i {
+            font-size: 80px;
+        }
+
+        .placeholder-image span {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Author Info Section */
+        .author-info-section {
+            padding-top: 20px;
+        }
+
+        .author-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            color: var(--primary-dark);
+            margin-bottom: 30px;
+            line-height: 1.2;
+            font-weight: 700;
+        }
+
+        .author-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            min-width: 120px;
+        }
+
+        .meta-value {
+            color: var(--text-gray);
+            font-size: 16px;
+        }
+
+        /* Admin Photo Upload */
+        .admin-section {
+            background: var(--bg-white);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: var(--shadow-light);
+            margin-bottom: 40px;
+        }
+
+        .admin-section h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+        }
+
+        .upload-form {
+            display: flex;
+            gap: 15px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 12px 25px;
+            background: var(--bg-light);
+            border: 2px dashed var(--border-light);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: var(--text-gray);
+        }
+
+        .file-input-label:hover {
+            border-color: var(--primary-accent);
+            color: var(--primary-accent);
+        }
+
+        .file-input-label i {
+            margin-right: 8px;
+        }
+
+        /* Books Section */
+        .books-section {
+            margin-top: 60px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--primary-dark);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-accent);
+            display: inline-block;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .book-card {
+            background: var(--bg-white);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .book-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--bg-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-accent);
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .book-info {
+            flex: 1;
+        }
+
+        .book-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 20px;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .book-card:hover .book-title {
+            color: var(--primary-accent);
+        }
+
+        .book-year {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .empty-state-icon {
+            font-size: 60px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .empty-state p {
+            color: var(--text-gray);
+            font-size: 16px;
+        }
+
+        /* Not Found */
+        .not-found {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .not-found h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+        }
+
+        .not-found p {
+            font-size: 18px;
+            color: var(--text-gray);
+            margin-bottom: 30px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary-accent);
+            color: var(--bg-white);
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-accent);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-dark);
+            padding: 60px 0 30px;
+            color: var(--bg-white);
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: var(--bg-white);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section li {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--primary-accent);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.1);
+            color: var(--bg-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: background 0.3s;
+            border-radius: 50%;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-accent);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 991px) {
+            .author-detail-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .author-photo {
+                max-width: 300px;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-nav {
+                display: none;
+            }
+            
+            .author-name {
+                font-size: 36px;
+            }
+            
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-wrapper">
+        <!-- Top Bar -->
+        <div class="header-top">
+            <div class="header-top-content">
+                <div class="header-top-left">
+                    <span><i class="fas fa-phone"></i> +1 (555) 123-4567</span>
+                    <span><i class="fas fa-envelope"></i> info@siwbooks.com</span>
+                </div>
+                <div class="header-top-right">
+                    <a th:href="@{/login}" sec:authorize="isAnonymous()">
+                        <i class="fas fa-user"></i> Login
+                    </a>
+                    <a th:href="@{/register}" sec:authorize="isAnonymous()">Register</a>
+                    <div sec:authorize="isAuthenticated()">
+                        <span>Welcome, <span sec:authentication="name"></span></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" style="background: none; border: none; color: white; cursor: pointer;">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Header -->
+        <div class="main-header">
+            <div class="header-content">
+                <a th:href="@{/}" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="logo-text">Siw<span>Books</span></div>
+                    <!-- Admin Badge -->
+                    <span class="admin-badge" sec:authorize="hasAuthority('ROLE_ADMIN')">Admin</span>
+                </a>
+                
+                <nav class="main-nav">
+                    <a th:href="@{/}">Home</a>
+                    <a th:href="@{/books}">Books</a>
+                    <a th:href="@{/authors}" class="active">Authors</a>
+                    <!-- Admin Link -->
+                    <a th:href="@{/admin}" sec:authorize="hasAuthority('ROLE_ADMIN')">Admin</a>
+                </nav>
+                
+                <div class="header-icons">
+                    <button type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <a href="#">
+                        <i class="fas fa-heart"></i>
+                    </a>
+                    <a href="#">
+                        <i class="fas fa-shopping-bag"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div th:if="${author}">
+            <!-- Author Detail -->
+            <div class="author-detail-container">
+                <!-- Author Photo -->
+                <div class="author-photo-section">
+                    <div class="author-photo">
+                        <img th:if="${author.photo != null}"
+                             th:src="@{/image/author/{id}(id=${author.id})}"
+                             th:alt="${author.firstName} + ' ' + ${author.lastName}"/>
+                        <div th:if="${author.photo == null}" class="placeholder-image">
+                            <i class="fas fa-user"></i>
+                            <span>Nessuna foto</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Admin Photo Upload -->
+                    <div sec:authorize="hasAuthority('ROLE_ADMIN')" class="admin-section">
+                        <h4>Gestisci Foto Autore</h4>
+                        <form th:action="@{/admin/authors/{id}/photo(id=${author.id})}"
+                              method="post" 
+                              enctype="multipart/form-data"
+                              class="upload-form">
+                            <div class="file-input-wrapper">
+                                <label for="file-upload" class="file-input-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    Scegli foto
+                                </label>
+                                <input id="file-upload" 
+                                       type="file" 
+                                       name="file" 
+                                       accept="image/png, image/jpeg" 
+                                       required
+                                       onchange="updateFileName(this)" />
+                            </div>
+                            <span id="file-name" style="color: var(--text-gray); font-size: 14px;"></span>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Carica Foto
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Author Info -->
+                <div class="author-info-section">
+                    <h1 class="author-name" th:text="${author.firstName} + ' ' + ${author.lastName}">Author Name</h1>
+                    
+                    <div class="author-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Nazionalità:</span>
+                            <span class="meta-value" th:text="${author.nationality}">Nationality</span>
+                        </div>
+                        <div class="meta-item" th:if="${author.dateOfBirth != null}">
+                            <span class="meta-label">Nato il:</span>
+                            <span class="meta-value" th:text="${#temporals.format(author.dateOfBirth,'dd MMMM yyyy')}">Birth Date</span>
+                        </div>
+                        <div class="meta-item" th:if="${author.dateOfDeath != null}">
+                            <span class="meta-label">Morto il:</span>
+                            <span class="meta-value" th:text="${#temporals.format(author.dateOfDeath,'dd MMMM yyyy')}">Death Date</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Books Section -->
+            <div class="books-section">
+                <h2 class="section-title">Libri di questo autore</h2>
+                
+                <div th:if="${not #lists.isEmpty(author.books)}" class="books-grid">
+                    <a th:each="book : ${author.books}" 
+                       th:href="@{/books/{id}(id=${book.id})}" 
+                       class="book-card">
+                        <div class="book-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="book-info">
+                            <h3 class="book-title" th:text="${book.title}">Book Title</h3>
+                            <p class="book-year" th:text="${book.year}">Year</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <div th:if="${#lists.isEmpty(author.books)}" class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <p>Nessun libro trovato per questo autore</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Not Found -->
+        <div th:if="${author == null}" class="not-found">
+            <h2>Autore non trovato</h2>
+            <p>L'autore che stai cercando non esiste o è stato rimosso.</p>
+            <a th:href="@{/authors}" class="btn btn-primary">Torna agli Autori</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About SiwBooks</h3>
+                    <p>Your premier destination for discovering exceptional literature. We bring together readers and the stories that matter most, offering a carefully curated selection of books across all genres.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a th:href="@{/}">Home</a></li>
+                        <li><a th:href="@{/books}">All Books</a></li>
+                        <li><a th:href="@{/authors}">Authors</a></li>
+                        <li><a th:href="@{/admin}" sec:authorize="hasAuthority('ROLE_ADMIN')">Admin</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Categories</h3>
+                    <ul>
+                        <li><a href="#">Fiction</a></li>
+                        <li><a href="#">Non-Fiction</a></li>
+                        <li><a href="#">Mystery & Thriller</a></li>
+                        <li><a href="#">Romance</a></li>
+                        <li><a href="#">Science Fiction</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Book Street, Literary City</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@siwbooks.com</li>
+                        <li><i class="fas fa-clock"></i> Mon - Fri: 9AM - 8PM</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 SiwBooks. All rights reserved. | Privacy Policy | Terms of Service</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function updateFileName(input) {
+            const fileName = input.files[0]?.name || '';
+            document.getElementById('file-name').textContent = fileName;
+        }
+    </script>
+</body>
+</html>

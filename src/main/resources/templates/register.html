@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="it"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Registrazione - SiwBooks</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&family=Poppins:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-dark: #000000;
+            --primary-accent: #dc2626;
+            --secondary-accent: #ef4444;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --text-light: #9ca3af;
+            --bg-light: #f9fafb;
+            --bg-cream: #fef3c7;
+            --bg-white: #ffffff;
+            --border-light: #e5e7eb;
+            --shadow-light: 0 2px 10px rgba(0,0,0,0.08);
+            --shadow-medium: 0 5px 20px rgba(0,0,0,0.1);
+            --shadow-hover: 0 10px 30px rgba(0,0,0,0.15);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --danger-color: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-light);
+            min-height: 100vh;
+            padding: 40px 20px;
+            overflow-y: auto;
+        }
+
+        /* Container Wrapper */
+        .page-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            top: 0;
+            left: 0;
+        }
+
+        .book-float {
+            position: absolute;
+            opacity: 0.05;
+            animation: float 20s infinite ease-in-out;
+            color: var(--primary-accent);
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-20px) rotate(-5deg);
+            }
+            50% {
+                transform: translateY(10px) rotate(3deg);
+            }
+            75% {
+                transform: translateY(-15px) rotate(-3deg);
+            }
+        }
+
+        .book-float:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            font-size: 60px;
+            animation-delay: 0s;
+        }
+
+        .book-float:nth-child(2) {
+            top: 20%;
+            right: 15%;
+            font-size: 80px;
+            animation-delay: 3s;
+        }
+
+        .book-float:nth-child(3) {
+            bottom: 20%;
+            left: 20%;
+            font-size: 70px;
+            animation-delay: 5s;
+        }
+
+        /* Register Container */
+        .register-container {
+            background: var(--bg-white);
+            border-radius: 20px;
+            box-shadow: var(--shadow-medium);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px 30px;
+            position: relative;
+            animation: slideIn 0.6s ease;
+            border: 2px solid var(--border-light);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Logo Section */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-accent);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-white);
+            font-size: 30px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: var(--primary-accent);
+        }
+
+        /* Form Title */
+        .form-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--primary-dark);
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-label span {
+            color: var(--primary-accent);
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-gray);
+            font-size: 16px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+            background: var(--bg-white);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .form-control.is-invalid {
+            border-color: var(--danger-color);
+        }
+
+        .invalid-feedback {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+            color: var(--danger-color);
+            font-weight: 500;
+        }
+
+        /* Submit Button */
+        .btn-register {
+            width: 100%;
+            padding: 14px 30px;
+            background: var(--primary-accent);
+            color: var(--bg-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-register:hover {
+            background: var(--secondary-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-register:active {
+            transform: translateY(0);
+        }
+
+        /* Login Link */
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 2px solid var(--border-light);
+        }
+
+        .login-link p {
+            color: var(--text-gray);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .login-link a {
+            color: var(--primary-accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .login-link a:hover {
+            color: var(--secondary-accent);
+            text-decoration: underline;
+        }
+
+        /* Back to Home */
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .back-home:hover {
+            color: var(--primary-accent);
+            transform: translateX(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 15px;
+            }
+
+            .register-container {
+                padding: 30px 20px;
+            }
+            
+            .logo-text {
+                font-size: 24px;
+            }
+            
+            .form-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <i class="fas fa-book book-float"></i>
+        <i class="fas fa-book-open book-float"></i>
+        <i class="fas fa-bookmark book-float"></i>
+    </div>
+
+    <div class="page-wrapper">
+        <div style="width: 100%; max-width: 500px;">
+            <!-- Back to Home -->
+            <a th:href="@{/}" class="back-home">
+                <i class="fas fa-arrow-left"></i>
+                Torna alla Home
+            </a>
+
+            <!-- Register Container -->
+            <div class="register-container">
+                <!-- Logo -->
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="logo-text">Siw<span>Books</span></div>
+                </div>
+
+                <!-- Form Title -->
+                <h2 class="form-title">Crea il tuo Account</h2>
+
+                <!-- Alert Messages -->
+                <div th:if="${registrationSuccessGlobal}" class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <span th:text="${registrationSuccessGlobal}">Registrazione completata!</span>
+                </div>
+                
+                <div th:if="${registrationErrorGlobal}" class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span th:text="${registrationErrorGlobal}">Errore nella registrazione</span>
+                </div>
+
+                <!-- Registration Form -->
+                <form th:action="@{/register}" th:object="${user}" method="post">
+                    <!-- Nome -->
+                    <div class="form-group">
+                        <label for="name" class="form-label">Nome</label>
+                        <div class="input-group">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" 
+                                   id="name"
+                                   th:field="*{name}" 
+                                   class="form-control" 
+                                   placeholder="Mario">
+                        </div>
+                    </div>
+
+                    <!-- Cognome -->
+                    <div class="form-group">
+                        <label for="surname" class="form-label">Cognome</label>
+                        <div class="input-group">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" 
+                                   id="surname"
+                                   th:field="*{surname}" 
+                                   class="form-control" 
+                                   placeholder="Rossi">
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email <span>*</span></label>
+                        <div class="input-group">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" 
+                                   id="email"
+                                   th:field="*{email}" 
+                                   class="form-control" 
+                                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                                   placeholder="mario.rossi@email.com"
+                                   required>
+                        </div>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                            Email non valida
+                        </div>
+                    </div>
+
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label for="username" class="form-label">Username <span>*</span></label>
+                        <div class="input-group">
+                            <i class="fas fa-at input-icon"></i>
+                            <input type="text" 
+                                   id="username"
+                                   th:field="*{username}" 
+                                   class="form-control" 
+                                   th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''"
+                                   placeholder="mariorossi"
+                                   required>
+                        </div>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
+                            Username non disponibile
+                        </div>
+                        <div id="usernameAvailability" style="font-size: 12px; margin-top: 5px; font-weight: 500;"></div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password <span>*</span></label>
+                        <div class="input-group">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" 
+                                   id="password"
+                                   th:field="*{password}" 
+                                   class="form-control" 
+                                   th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                                   placeholder="••••••••"
+                                   required
+                                   onkeyup="checkPasswordStrength(this.value)">
+                        </div>
+                        <div class="password-strength" style="margin-top: 8px; height: 4px; background: #e5e7eb; border-radius: 2px; overflow: hidden;">
+                            <div class="password-strength-bar" id="passwordStrengthBar" style="height: 100%; width: 0; transition: all 0.3s; border-radius: 2px;"></div>
+                        </div>
+                        <p class="password-hint" style="font-size: 11px; color: #6b7280; margin-top: 5px;">
+                            <span id="passwordHint">Usa almeno 8 caratteri con lettere, numeri e simboli</span>
+                        </p>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                            Password non valida
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn-register">
+                        <i class="fas fa-user-plus"></i>
+                        Crea Account
+                    </button>
+                </form>
+
+                <!-- Login Link -->
+                <div class="login-link">
+                    <p>Hai già un account?</p>
+                    <a th:href="@{/login}">Accedi ora</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            const strengthBar = document.getElementById('passwordStrengthBar');
+            const passwordHint = document.getElementById('passwordHint');
+            let strength = 0;
+            let hints = [];
+            
+            if (password.length >= 8) {
+                strength++;
+            } else {
+                hints.push("almeno 8 caratteri");
+            }
+            
+            if (password.match(/[a-z]+/)) {
+                strength++;
+            } else {
+                hints.push("lettere minuscole");
+            }
+            
+            if (password.match(/[A-Z]+/)) {
+                strength++;
+            } else {
+                hints.push("lettere maiuscole");
+            }
+            
+            if (password.match(/[0-9]+/)) {
+                strength++;
+            } else {
+                hints.push("numeri");
+            }
+            
+            if (password.match(/[$@#&!]+/)) {
+                strength++;
+            } else {
+                hints.push("simboli speciali");
+            }
+            
+            // Update bar
+            if (strength <= 2) {
+                strengthBar.style.width = '33%';
+                strengthBar.style.background = '#ef4444';
+                passwordHint.innerHTML = '❌ Debole - Aggiungi: ' + hints.join(', ');
+                passwordHint.style.color = '#ef4444';
+            } else if (strength <= 4) {
+                strengthBar.style.width = '66%';
+                strengthBar.style.background = '#f59e0b';
+                passwordHint.innerHTML = '⚠️ Media - Aggiungi: ' + hints.join(', ');
+                passwordHint.style.color = '#f59e0b';
+            } else {
+                strengthBar.style.width = '100%';
+                strengthBar.style.background = '#10b981';
+                passwordHint.innerHTML = '✅ Forte - Password sicura!';
+                passwordHint.style.color = '#10b981';
+            }
+        }
+
+        // Check username availability - VELOCIZZATO
+        const usernameInput = document.getElementById('username');
+        const availabilityMsg = document.getElementById('usernameAvailability');
+        let typingTimer;
+        const doneTypingInterval = 300; // Ridotto da 500 a 300ms
+        
+        if (availabilityMsg) {
+            availabilityMsg.style.fontSize = '12px';
+            availabilityMsg.style.marginTop = '5px';
+        }
+        
+        // Controllo anche su input oltre che keyup per maggiore reattività
+        usernameInput.addEventListener('input', checkUsername);
+        usernameInput.addEventListener('keyup', checkUsername);
+        
+        function checkUsername() {
+            clearTimeout(typingTimer);
+            const username = usernameInput.value.trim();
+            
+            if (username.length < 3) {
+                availabilityMsg.textContent = 'Username deve essere almeno 3 caratteri';
+                availabilityMsg.style.color = '#6b7280';
+                usernameInput.style.borderColor = '';
+                return;
+            }
+            
+            availabilityMsg.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Controllo...';
+            availabilityMsg.style.color = '#6b7280';
+            
+            typingTimer = setTimeout(function() {
+                console.log('Chiamando check-username per:', username);
+                fetch('/check-username?username=' + encodeURIComponent(username))
+                    .then(response => {
+                        console.log('Response status:', response.status);
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Data ricevuta:', data);
+                        if (data.available) {
+                            availabilityMsg.innerHTML = '<i class="fas fa-check-circle"></i> ' + data.message;
+                            availabilityMsg.style.color = '#10b981';
+                            usernameInput.style.borderColor = '#10b981';
+                        } else {
+                            availabilityMsg.innerHTML = '<i class="fas fa-times-circle"></i> ' + data.message;
+                            availabilityMsg.style.color = '#ef4444';
+                            usernameInput.style.borderColor = '#ef4444';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Errore nel controllo username:', error);
+                        availabilityMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Errore di connessione';
+                        availabilityMsg.style.color = '#f59e0b';
+                    });
+            }, doneTypingInterval);
+        }
+    </script>
+</body>
+</html>

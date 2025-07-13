@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <title>Authors – SiwBooks</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&family=Poppins:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-dark: #000000;
+            --primary-accent: #dc2626;
+            --secondary-accent: #ef4444;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --text-light: #9ca3af;
+            --bg-light: #f9fafb;
+            --bg-cream: #fef3c7;
+            --bg-white: #ffffff;
+            --border-light: #e5e7eb;
+            --shadow-light: 0 2px 10px rgba(0,0,0,0.08);
+            --shadow-medium: 0 5px 20px rgba(0,0,0,0.1);
+            --shadow-hover: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--bg-light);
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header-wrapper {
+            background: var(--bg-white);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header-top {
+            background: #000000;
+            color: var(--bg-white);
+            padding: 8px 0;
+            font-size: 12px;
+        }
+
+        .header-top-content {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-top-left {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-top-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-top a {
+            color: var(--bg-white);
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .header-top a:hover {
+            opacity: 0.8;
+        }
+
+        .main-header {
+            background: var(--bg-white);
+            padding: 20px 0;
+        }
+
+        .header-content {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-white);
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--primary-dark);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: var(--primary-accent);
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .main-nav a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: var(--primary-accent);
+        }
+
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-accent);
+            transition: width 0.3s;
+        }
+
+        .main-nav a:hover::after,
+        .main-nav a.active::after {
+            width: 100%;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-icons button,
+        .header-icons a {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: color 0.3s;
+            text-decoration: none;
+        }
+
+        .header-icons button:hover,
+        .header-icons a:hover {
+            color: var(--primary-accent);
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-top: 108px;
+            background: linear-gradient(135deg, #fff7ed 0%, #fee2e2 100%);
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            font-family: 'Crimson Text', serif;
+            font-size: 20px;
+            color: var(--text-gray);
+            font-style: italic;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Search Section */
+        .search-section {
+            background: var(--bg-white);
+            padding: 30px 0;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 40px;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-accent);
+            outline: none;
+        }
+
+        .search-btn {
+            padding: 12px 25px;
+            background: var(--primary-accent);
+            color: var(--bg-white);
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background: var(--secondary-accent);
+        }
+
+        /* Authors Section */
+        .authors-section {
+            padding: 40px 0 80px;
+        }
+
+        .alphabet-filter {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .alphabet-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .alphabet-btn:hover,
+        .alphabet-btn.active {
+            background: var(--primary-accent);
+            color: var(--bg-white);
+            border-color: var(--primary-accent);
+            transform: translateY(-2px);
+        }
+
+        .alphabet-btn.all {
+            width: auto;
+            padding: 0 20px;
+        }
+
+        /* Authors Grid */
+        .authors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .author-card {
+            background: var(--bg-white);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+        }
+
+        .author-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-accent);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+            transform-origin: left;
+        }
+
+        .author-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .author-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .author-avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: var(--bg-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: var(--primary-accent);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .author-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .author-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            display: block;
+            transition: color 0.3s;
+        }
+
+        .author-card:hover .author-name {
+            color: var(--primary-accent);
+        }
+
+        .author-info {
+            color: var(--text-gray);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .author-books-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--bg-light);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        /* List View Alternative */
+        .view-toggle {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .view-btn {
+            padding: 8px 12px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-light);
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-btn.active {
+            background: var(--primary-accent);
+            color: var(--bg-white);
+            border-color: var(--primary-accent);
+        }
+
+        .authors-list {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .authors-list.active {
+            display: flex;
+        }
+
+        .authors-grid.list-view {
+            display: none;
+        }
+
+        .author-list-item {
+            background: var(--bg-white);
+            padding: 20px 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            transition: all 0.3s;
+            text-decoration: none;
+            box-shadow: var(--shadow-light);
+        }
+
+        .author-list-item:hover {
+            transform: translateX(10px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .author-list-avatar {
+            width: 60px;
+            height: 60px;
+            background: var(--bg-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--primary-accent);
+            flex-shrink: 0;
+        }
+
+        .author-list-info {
+            flex: 1;
+        }
+
+        .author-list-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: var(--primary-dark);
+            font-weight: 600;
+            margin-bottom: 5px;
+            transition: color 0.3s;
+        }
+
+        .author-list-item:hover .author-list-name {
+            color: var(--primary-accent);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 80px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            color: var(--text-gray);
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-dark);
+            padding: 60px 0 30px;
+            color: var(--bg-white);
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: var(--bg-white);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section li {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--primary-accent);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.1);
+            color: var(--bg-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: background 0.3s;
+            border-radius: 50%;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-accent);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 991px) {
+            .authors-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-nav {
+                display: none;
+            }
+            
+            .page-header h1 {
+                font-size: 36px;
+            }
+            
+            .alphabet-filter {
+                gap: 5px;
+            }
+            
+            .alphabet-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-wrapper">
+        <!-- Top Bar -->
+        <div class="header-top">
+            <div class="header-top-content">
+                <div class="header-top-left">
+                    <span><i class="fas fa-phone"></i> +1 (555) 123-4567</span>
+                    <span><i class="fas fa-envelope"></i> info@siwbooks.com</span>
+                </div>
+                <div class="header-top-right">
+                    <a th:href="@{/login}" sec:authorize="isAnonymous()">
+                        <i class="fas fa-user"></i> Login
+                    </a>
+                    <a th:href="@{/register}" sec:authorize="isAnonymous()">Register</a>
+                    <div sec:authorize="isAuthenticated()">
+                        <span>Welcome, <span sec:authentication="name"></span></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" style="background: none; border: none; color: white; cursor: pointer;">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Header -->
+        <div class="main-header">
+            <div class="header-content">
+                <a th:href="@{/}" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="logo-text">Siw<span>Books</span></div>
+                </a>
+                
+                <nav class="main-nav">
+                    <a th:href="@{/}">Home</a>
+                    <a th:href="@{/books}">Books</a>
+                    <a th:href="@{/authors}" class="active">Authors</a>
+					<a th:href="@{/admin/dashboard}" sec:authorize="hasAuthority('ROLE_ADMIN')">Admin</a>
+                   
+                </nav>
+                
+                <div class="header-icons">
+                    <button type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <a href="#">
+                        <i class="fas fa-heart"></i>
+                    </a>
+                    
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Tutti i Nostri Autori</h1>
+            <p>Discover the brilliant minds behind our book collection</p>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Search authors by name..." id="authorSearch">
+                    <button class="search-btn" onclick="searchAuthors()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Authors Section -->
+    <section class="authors-section">
+        <div class="container">
+            <!-- Alphabet Filter -->
+            <div class="alphabet-filter">
+                <button class="alphabet-btn all active" onclick="filterByLetter('all')">ALL</button>
+                <button class="alphabet-btn" onclick="filterByLetter('A')">A</button>
+                <button class="alphabet-btn" onclick="filterByLetter('B')">B</button>
+                <button class="alphabet-btn" onclick="filterByLetter('C')">C</button>
+                <button class="alphabet-btn" onclick="filterByLetter('D')">D</button>
+                <button class="alphabet-btn" onclick="filterByLetter('E')">E</button>
+                <button class="alphabet-btn" onclick="filterByLetter('F')">F</button>
+                <button class="alphabet-btn" onclick="filterByLetter('G')">G</button>
+                <button class="alphabet-btn" onclick="filterByLetter('H')">H</button>
+                <button class="alphabet-btn" onclick="filterByLetter('I')">I</button>
+                <button class="alphabet-btn" onclick="filterByLetter('J')">J</button>
+                <button class="alphabet-btn" onclick="filterByLetter('K')">K</button>
+                <button class="alphabet-btn" onclick="filterByLetter('L')">L</button>
+                <button class="alphabet-btn" onclick="filterByLetter('M')">M</button>
+                <button class="alphabet-btn" onclick="filterByLetter('N')">N</button>
+                <button class="alphabet-btn" onclick="filterByLetter('O')">O</button>
+                <button class="alphabet-btn" onclick="filterByLetter('P')">P</button>
+                <button class="alphabet-btn" onclick="filterByLetter('Q')">Q</button>
+                <button class="alphabet-btn" onclick="filterByLetter('R')">R</button>
+                <button class="alphabet-btn" onclick="filterByLetter('S')">S</button>
+                <button class="alphabet-btn" onclick="filterByLetter('T')">T</button>
+                <button class="alphabet-btn" onclick="filterByLetter('U')">U</button>
+                <button class="alphabet-btn" onclick="filterByLetter('V')">V</button>
+                <button class="alphabet-btn" onclick="filterByLetter('W')">W</button>
+                <button class="alphabet-btn" onclick="filterByLetter('X')">X</button>
+                <button class="alphabet-btn" onclick="filterByLetter('Y')">Y</button>
+                <button class="alphabet-btn" onclick="filterByLetter('Z')">Z</button>
+            </div>
+
+            <!-- View Toggle -->
+            <div class="view-toggle">
+                <button class="view-btn active" onclick="toggleView('grid')">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button class="view-btn" onclick="toggleView('list')">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+
+            <!-- Authors Grid -->
+            <div class="authors-grid" id="authorsGrid" th:unless="${authors.isEmpty()}">
+                <div class="author-card" th:each="author : ${authors}">
+                    <a th:href="@{/authors/{id}(id=${author.id})}" style="text-decoration: none; color: inherit;">
+                        <div class="author-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 class="author-name" th:text="${author.firstName} + ' ' + ${author.lastName}">Author Name</h3>
+                        <p class="author-info">Literary Author</p>
+                        <span class="author-books-count">
+                            <i class="fas fa-book"></i>
+                            <span th:text="${author.books?.size() ?: 0} + ' Books'">0 Books</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Authors List (Alternative View) -->
+            <div class="authors-list" id="authorsList" th:unless="${authors.isEmpty()}">
+                <a th:each="author : ${authors}" 
+                   th:href="@{/authors/{id}(id=${author.id})}" 
+                   class="author-list-item">
+                    <div class="author-list-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="author-list-info">
+                        <h3 class="author-list-name" th:text="${author.firstName} + ' ' + ${author.lastName}">Author Name</h3>
+                        <p class="author-info">
+                            <i class="fas fa-book"></i>
+                            <span th:text="${author.books?.size() ?: 0} + ' Books published'">0 Books published</span>
+                        </p>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: var(--text-light);"></i>
+                </a>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" th:if="${authors.isEmpty()}">
+                <div class="empty-state-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Nessun autore trovato</h3>
+                <p>No authors are currently in our database.</p>
+                <a th:href="@{/}" class="btn btn-primary">Return Home</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About SiwBooks</h3>
+                    <p>Your premier destination for discovering exceptional literature. We bring together readers and the stories that matter most, offering a carefully curated selection of books across all genres.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a th:href="@{/}">Home</a></li>
+                        <li><a th:href="@{/books}">All Books</a></li>
+                        <li><a th:href="@{/authors}">Authors</a></li>
+						<li><a th:href="@{/admin/dashboard}" sec:authorize="hasAuthority('ROLE_ADMIN')">Admin</a><li>
+                       
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Categories</h3>
+                    <ul>
+                        <li><a href="#">Fiction</a></li>
+                        <li><a href="#">Non-Fiction</a></li>
+                        <li><a href="#">Mystery & Thriller</a></li>
+                        <li><a href="#">Romance</a></li>
+                        <li><a href="#">Science Fiction</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Book Street, Literary City</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@siwbooks.com</li>
+                        <li><i class="fas fa-clock"></i> Mon - Fri: 9AM - 8PM</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 SiwBooks. All rights reserved. | Privacy Policy | Terms of Service</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Store all authors
+        let allAuthors = [];
+        let filteredAuthors = [];
+        let currentView = 'grid';
+        let currentLetter = 'all';
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const authorCards = document.querySelectorAll('.author-card');
+            const authorListItems = document.querySelectorAll('.author-list-item');
+            
+            authorCards.forEach((card, index) => {
+                const nameElement = card.querySelector('.author-name');
+                const name = nameElement ? nameElement.textContent.trim() : '';
+                allAuthors.push({
+                    gridElement: card,
+                    listElement: authorListItems[index],
+                    name: name,
+                    lastName: name.split(' ').slice(-1)[0], // Get last name for alphabetical filter
+                    firstName: name.split(' ')[0] // Get first name
+                });
+            });
+            
+            filteredAuthors = [...allAuthors];
+        });
+
+        // Search functionality
+        function searchAuthors() {
+            const searchValue = document.getElementById('authorSearch').value.toLowerCase();
+            
+            if (searchValue === '') {
+                // Reset to current letter filter
+                filterByLetter(currentLetter);
+            } else {
+                // Filter by search term
+                filteredAuthors = allAuthors.filter(author => 
+                    author.name.toLowerCase().includes(searchValue)
+                );
+                updateDisplay();
+            }
+        }
+
+        // Real-time search as user types
+        document.getElementById('authorSearch').addEventListener('input', searchAuthors);
+
+        // Search on Enter key
+        document.getElementById('authorSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchAuthors();
+            }
+        });
+
+        // Filter by letter
+        function filterByLetter(letter) {
+            // Update active button
+            document.querySelectorAll('.alphabet-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Find and activate the clicked button
+            const activeBtn = Array.from(document.querySelectorAll('.alphabet-btn')).find(btn => 
+                btn.textContent === letter || (letter === 'all' && btn.classList.contains('all'))
+            );
+            if (activeBtn) activeBtn.classList.add('active');
+            
+            currentLetter = letter;
+            
+            // Clear search input
+            document.getElementById('authorSearch').value = '';
+            
+            // Filter authors
+            if (letter === 'all') {
+                filteredAuthors = [...allAuthors];
+            } else {
+                filteredAuthors = allAuthors.filter(author => 
+                    author.lastName.toUpperCase().startsWith(letter.toUpperCase())
+                );
+            }
+            
+            updateDisplay();
+        }
+
+        // Toggle between grid and list view
+        function toggleView(view) {
+            currentView = view;
+            
+            // Update view buttons
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.view-btn').classList.add('active');
+            
+            // Toggle displays
+            const grid = document.getElementById('authorsGrid');
+            const list = document.getElementById('authorsList');
+            
+            if (view === 'grid') {
+                if (grid) {
+                    grid.style.display = 'grid';
+                    grid.classList.remove('list-view');
+                }
+                if (list) {
+                    list.style.display = 'none';
+                    list.classList.remove('active');
+                }
+            } else {
+                if (grid) {
+                    grid.style.display = 'none';
+                    grid.classList.add('list-view');
+                }
+                if (list) {
+                    list.style.display = 'flex';
+                    list.classList.add('active');
+                }
+            }
+            
+            updateDisplay();
+        }
+
+        // Update the display based on filters
+        function updateDisplay() {
+            const grid = document.getElementById('authorsGrid');
+            const list = document.getElementById('authorsList');
+            const emptyState = document.querySelector('.empty-state');
+            
+            // Clear current displays
+            if (grid) grid.innerHTML = '';
+            if (list) list.innerHTML = '';
+            
+            // Show filtered authors
+            if (filteredAuthors.length > 0) {
+                filteredAuthors.forEach(author => {
+                    if (currentView === 'grid' && grid) {
+                        grid.appendChild(author.gridElement.cloneNode(true));
+                    } else if (currentView === 'list' && list) {
+                        list.appendChild(author.listElement.cloneNode(true));
+                    }
+                });
+                
+                // Hide empty state if showing
+                if (emptyState) emptyState.style.display = 'none';
+                
+                // Ensure correct view is displayed
+                if (currentView === 'grid' && grid) {
+                    grid.style.display = 'grid';
+                } else if (currentView === 'list' && list) {
+                    list.style.display = 'flex';
+                }
+            } else {
+                // No results - show custom empty state
+                const noResultsHtml = `
+                    <div class="empty-state" style="display: block;">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>No Authors Found</h3>
+                        <p>Try adjusting your search or filters.</p>
+                        <button onclick="clearFilters()" class="btn btn-primary" style="padding: 12px 30px; background: var(--primary-accent); color: white; border: none; border-radius: 4px; cursor: pointer;">Clear Filters</button>
+                    </div>
+                `;
+                
+                if (grid && currentView === 'grid') {
+                    grid.style.display = 'block';
+                    grid.innerHTML = noResultsHtml;
+                } else if (list && currentView === 'list') {
+                    list.style.display = 'block';
+                    list.innerHTML = noResultsHtml;
+                }
+            }
+        }
+
+        // Clear all filters
+        function clearFilters() {
+            // Reset search
+            document.getElementById('authorSearch').value = '';
+            
+            // Reset to 'all' letter filter
+            filterByLetter('all');
+        }
+
+        // Add some CSS for button styling
+        const style = document.createElement('style');
+        style.textContent = `
+            .btn {
+                padding: 12px 30px;
+                border: none;
+                border-radius: 4px;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                font-size: 13px;
+                cursor: pointer;
+                transition: all 0.3s;
+                text-decoration: none;
+                display: inline-block;
+            }
+            
+            .btn-primary {
+                background: var(--primary-accent);
+                color: var(--bg-white);
+            }
+            
+            .btn-primary:hover {
+                background: var(--secondary-accent);
+                transform: translateY(-2px);
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
