@@ -5,7 +5,9 @@ Una semplice applicazione Spring Boot per gestire una raccolta di libri.
 ## 📖 Descrizione
 
 SiwBooks è un progetto basato su Spring Boot che fornisce:
-- CRUD (Create, Read, Update, Delete) per entità **Book** ( tramite l'admin) 
+- CRUD (Create, Read, Update, Delete) per entità **Book** ( tramite l'admin)
+- CRUD (Create, Read, Update, Delete) per entità **Autore** ( tramite l'admin)
+- CRUD (Create, Read, Update) per entità **Recensioni** ( tramite l'admin)
 - Frontend minimale in Thymeleaf (opzionale)
 
 ## 🚀 Funzionalità Principali
@@ -24,12 +26,13 @@ SiwBooks è un progetto basato su Spring Boot che fornisce:
 
 ## 🛠️ Tecnologie
 
-- Java 17  
-- Spring Boot   
+- Java 21  
+- Spring Boot  3.3.o 
 - Spring Data JPA  
 - Thymeleaf     
-- Pgadmin 4 (configurabile)  
+- PostgreSQL (configurabile)  
 - Maven  
+- Bootstrap 5.3.3
 
 ## 📋 Prerequisiti
 
