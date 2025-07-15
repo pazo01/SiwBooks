@@ -77,6 +77,15 @@ UC8: **Moderazione Recensioni** - Eliminazione recensioni inappropriate
 UC9: **Dashboard Amministrativa** - Visualizzazione statistiche
 
 
+## Modello del Dominio
+
+<div align="center">
+  <!-- File in radice -->
+  <img src="./modellodominio.svg" alt="Modello del Dominio" />
+
+  <!-- Se invece lo metti in docs/: -->
+  <!-- <img src="docs/modellodominio.svg" alt="Modello del Dominio" /> -->
+</div>
 
 
 
