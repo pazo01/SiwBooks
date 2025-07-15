@@ -9,7 +9,10 @@
     </filter>
   </defs>
   
-  <!-- Background -->
+  <!-- White Background -->
+  <rect width="1400" height="1000" fill="white"/>
+  
+  <!-- Grid overlay -->
   <rect width="1400" height="1000" fill="url(#grid)"/>
   
   <!-- Title -->
@@ -268,5 +271,3 @@
     <text x="990" y="960" font-family="Arial, sans-serif" font-size="11" fill="#2c3e50">• Responsive design</text>
   </g>
 </svg>
-
-
