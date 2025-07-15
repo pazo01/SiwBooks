@@ -46,3 +46,42 @@ SiwBooks è un progetto basato su Spring Boot che fornisce:
    ```bash
    git clone https://github.com/pazo01/SiwBooks.git
    cd SiwBooks
+
+
+
+
+## 📖 Siw Books Casi d'uso : 
+
+Utente Anonimo:
+
+UC1: **Navigazione Pubblica** - Accesso a libri, autori e recensioni
+
+UC2: **Registrazione** - Creazione nuovo account con validazioni
+
+UC3: **Login** - Autenticazione con reindirizzamento basato su ruolo
+
+Utente Registrato (USER):
+
+UC4: **Gestione Recensioni** - Creazione recensioni con vincolo di unicità
+
+UC5: **Logout** - Terminazione sessione
+
+Amministratore (ADMIN):
+
+UC6: **Gestione Libri** - CRUD completo con gestione immagini
+
+UC7: **Gestione Autori** - CRUD con foto e associazioni libri
+
+UC8: **Moderazione Recensioni** - Eliminazione recensioni inappropriate
+
+UC9: **Dashboard Amministrativa** - Visualizzazione statistiche
+
+
+
+
+
+
+
+
+
+
